@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Space_Intruder"
         mc:Ignorable="d"
-        Title="Space Intruder" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="Space Intruder" Height="450" Width="800"
+        KeyDown="Window_KeyDown">
+    <Canvas Background="Black">
+        <Rectangle x:Name="Klocek" Width="50" Height="50" >
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\Zdjecia\milyczarnypan.jfif" Stretch="UniformToFill"/>
+            </Rectangle.Fill>
+        </Rectangle>
+    </Canvas>
 </Window>
