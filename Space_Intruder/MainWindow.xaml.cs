@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Space_Intruder.Class;
-using static Space_Intruder.Class.Przeciwnik;
 
 namespace Space_Intruder
 {
     public partial class MainWindow : Window
     {
         private double pozycjaX = 200;
-
         private List<Enemy> enemies = new List<Enemy>(); // Lista przeciwników
 
         public MainWindow()
@@ -19,22 +19,44 @@ namespace Space_Intruder
             Canvas.SetLeft(Klocek, pozycjaX);
             Canvas.SetBottom(Klocek, 20); // Umieszczenie 20px od dolnej krawędzi
 
-            // Tworzymy czterech przeciwników
+            // Uruchamiamy główną pętlę gry
+            DispatcherTimer gameTimer = new DispatcherTimer();
+            gameTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
+            gameTimer.Tick += GameLoop;
+            gameTimer.Start();
+
+            // Tworzymy przeciwników po załadowaniu okna
+            this.Loaded += Window_Loaded;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             CreateEnemies();
         }
 
         private void CreateEnemies()
         {
-            // Dodanie czterech przeciwników na canvas
-            enemies.Add(new Enemy(100, 50, EnemyType.Basic));
-            enemies.Add(new Enemy(200, 50, EnemyType.Mage));
-            enemies.Add(new Enemy(300, 50, EnemyType.Tank));
-            enemies.Add(new Enemy(400, 50, EnemyType.Spider));
+            int enemyRows = 2; // Liczba rzędów przeciwników
+            int enemyColumns = 6; // Liczba przeciwników w rzędzie
+            double enemySpacingX = 80; // Odstęp między przeciwnikami w poziomie
+            double enemySpacingY = 60; // Odstęp między rzędami przeciwników
+            double startX = 50; // Początkowa pozycja X pierwszego przeciwnika
+            double startY = MyCanvas.ActualHeight - 100; // Początkowa pozycja Y przeciwników (na górze ekranu)
 
-            // Dodajemy ich na canvas
-            foreach (var enemy in enemies)
+            for (int row = 0; row < enemyRows; row++)
             {
-                MyCanvas.Children.Add(enemy.Visual);
+                for (int col = 0; col < enemyColumns; col++)
+                {
+                    double x = startX + col * enemySpacingX;
+                    double y = startY - row * enemySpacingY; // Przeciwnicy są ustawieni od góry
+
+                    // Tworzymy przeciwnika
+                    Enemy enemy = new Enemy(x, y, EnemyType.Basic); // Możesz zmienić typ przeciwnika
+                    enemies.Add(enemy);
+
+                    // Dodajemy przeciwnika do canvas
+                    MyCanvas.Children.Add(enemy.Visual);
+                }
             }
         }
 
@@ -66,19 +88,30 @@ namespace Space_Intruder
             Canvas.SetLeft(Klocek, pozycjaX);
         }
 
-
-        // Możesz dodać logikę do poruszania przeciwników i ich strzelania
         private void GameLoop(object sender, EventArgs e)
         {
+            // Poruszanie przeciwników
             foreach (var enemy in enemies)
             {
-                // Ruch przeciwników
                 enemy.Move();
 
-                // Strzelanie przeciwników
-                enemy.Shoot(MyCanvas);
+                // Sprawdzamy, czy przeciwnik dotarł do krawędzi ekranu
+                double enemyX = Canvas.GetLeft(enemy.Visual);
+                if (enemyX <= 0 || enemyX + enemy.Visual.Width >= MyCanvas.ActualWidth)
+                {
+                    // Zmieniamy kierunek ruchu
+                    enemy.Direction *= -1;
 
-                // Aktualizacja pocisków przeciwników
+                    // Przesuwamy przeciwnika w dół (opcjonalnie)
+                    double currentY = Canvas.GetBottom(enemy.Visual);
+                    Canvas.SetBottom(enemy.Visual, currentY - 10); // 10 to wartość przesunięcia w dół
+                }
+            }
+
+            // Strzelanie przeciwników (opcjonalnie)
+            foreach (var enemy in enemies)
+            {
+                enemy.Shoot(MyCanvas);
                 enemy.UpdateBullets();
             }
         }

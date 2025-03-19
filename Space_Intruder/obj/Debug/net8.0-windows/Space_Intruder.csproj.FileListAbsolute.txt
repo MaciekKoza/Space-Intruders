@@ -6,7 +6,6 @@ C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\S
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\MainWindow.g.cs
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\App.g.cs
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder_MarkupCompile.cache
-C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder_MarkupCompile.lref
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\MainWindow.baml
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.g.resources
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.GeneratedMSBuildEditorConfig.editorconfig
@@ -19,3 +18,4 @@ C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\r
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.pdb
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.genruntimeconfig.cache
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\ref\Space_Intruder.dll
+C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder_MarkupCompile.lref

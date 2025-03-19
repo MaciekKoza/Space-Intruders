@@ -1,92 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using static Space_Intruder.Class.Przeciwnik;
+using static Space_Intruder.Class.Enemy;
 
 namespace Space_Intruder.Class
 {
     public class Pocisk
     {
-        private int sila;
-        private DispatcherTimer timer;
-        public Rectangle Kształt { get; private set; }
-        private Canvas gameCanvas;
-        private List<Enemy> enemies;
+        private Rectangle visual; // Wizualna reprezentacja pocisku
+        private double speed; // Prędkość pocisku
+        private Canvas canvas; // Canvas, na którym znajduje się pocisk
+        private List<Enemy> enemies; // Lista przeciwników
+        private DispatcherTimer timer; // Timer do aktualizacji pozycji pocisku
 
-        public Pocisk(int sila, double startX, double startY, Canvas canvas, List<Enemy> enemies)
+        public Pocisk(double speed, double startX, double startY, Canvas canvas, List<Enemy> enemies)
         {
-            this.sila = sila;
-            this.gameCanvas = canvas;
+            this.speed = speed;
+            this.canvas = canvas;
             this.enemies = enemies;
 
-            Kształt = new Rectangle
+            // Tworzymy wizualną reprezentację pocisku
+            visual = new Rectangle
             {
                 Width = 5,
-                Height = 20,
-                Fill = Brushes.Red
+                Height = 15,
+                Fill = System.Windows.Media.Brushes.Yellow
             };
 
-            // Ustawienie pozycji pocisku
-            Canvas.SetLeft(Kształt, startX + 22.5); // Środek bohatera
-            Canvas.SetTop(Kształt, startY - 20); // Pocisk startuje nad bohaterem
+            // Ustawiamy pozycję początkową pocisku
+            Canvas.SetLeft(visual, startX + 20); // 20 to offset, aby pocisk był na środku gracza
+            Canvas.SetBottom(visual, startY);
 
-            // Dodaj pocisk do canvas
-            canvas.Children.Add(Kształt);
+            // Dodajemy pocisk do canvas
+            canvas.Children.Add(visual);
 
-            // Timer do ruchu pocisku
-            timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(0.02) // Szybszy ruch
-            };
-            timer.Tick += MoveUp;
+            // Uruchamiamy timer do aktualizacji pozycji pocisku
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
+            timer.Tick += Timer_Tick;
             timer.Start();
         }
 
-        private void MoveUp(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
-            double currentY = Canvas.GetTop(Kształt);
+            // Przesuwamy pocisk do góry
+            double currentY = Canvas.GetBottom(visual);
+            Canvas.SetBottom(visual, currentY + speed);
 
-            if (currentY <= 0) // Jeśli pocisk dotarł do góry ekranu, usuń go
+            // Sprawdzamy kolizję z przeciwnikami
+            CheckCollision();
+
+            // Jeśli pocisk wyjdzie poza canvas, usuwamy go
+            if (currentY > canvas.ActualHeight)
             {
-                Destroy();
-            }
-            else
-            {
-                Canvas.SetTop(Kształt, currentY - 10); // Poruszamy pocisk w górę
-                CheckCollisionWithEnemies();
+                timer.Stop();
+                canvas.Children.Remove(visual);
             }
         }
 
-        private void CheckCollisionWithEnemies()
+        private void CheckCollision()
         {
-            Rect bulletBounds = new Rect(Canvas.GetLeft(Kształt), Canvas.GetTop(Kształt), Kształt.Width, Kształt.Height);
+            // Pobieramy pozycję i rozmiar pocisku
+            Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
 
-            foreach (var enemy in enemies)
+            // Sprawdzamy kolizję z każdym przeciwnikiem
+            foreach (var enemy in enemies.ToList()) // Używamy ToList(), aby uniknąć modyfikacji kolekcji podczas iteracji
             {
-                if (enemy.Visual == null) continue;
+                Rect enemyRect = new Rect(Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual), enemy.Visual.Width, enemy.Visual.Height);
 
-                double enemyX = Canvas.GetLeft(enemy.Visual);
-                double enemyY = Canvas.GetTop(enemy.Visual);
-
-                Rect enemyBounds = new Rect(enemyX, enemyY, enemy.Visual.Width, enemy.Visual.Height);
-
-                if (bulletBounds.IntersectsWith(enemyBounds))
+                if (pociskRect.IntersectsWith(enemyRect))
                 {
-                    enemy.TakeDamage(sila);
-                    Destroy();
-                    break;
+                    // Kolizja! Usuwamy przeciwnika i pocisk
+                    canvas.Children.Remove(enemy.Visual);
+                    enemies.Remove(enemy);
+                    canvas.Children.Remove(visual);
+                    timer.Stop();
+                    break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
                 }
             }
-        }
-
-        private void Destroy()
-        {
-            timer.Stop();
-            gameCanvas.Children.Remove(Kształt);
         }
     }
 }

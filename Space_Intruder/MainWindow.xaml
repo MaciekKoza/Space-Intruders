@@ -9,13 +9,16 @@
         Width="1200"
         Height="600"
         KeyDown="Window_KeyDown">
-    
-    <Canvas x:Name="MyCanvas" Background="Black">
-        <Rectangle x:Name="Klocek" Width="50" Height="50">
-            <Rectangle.Fill>
-                <ImageBrush ImageSource="C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\Zdjecia\milyczarnypan.jfif" Stretch="UniformToFill"/>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Canvas>
+
+    <Grid>
+        <Canvas x:Name="MyCanvas" Background="Black">
+            <!-- Gracz (Klocek) -->
+            <Rectangle x:Name="Klocek" Width="50" Height="50">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\Zdjecia\milyczarnypan.jfif" Stretch="UniformToFill"/>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Canvas>
+    </Grid>
 
 </Window>
