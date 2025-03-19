@@ -49,4 +49,44 @@ namespace Space_Intruder.Class
         Tank,
         Spider
     }
+
+    public class TankEnemy : Enemy
+    {
+        public TankEnemy(double x, double y)
+            : base(x, y, EnemyType.Tank)
+        {
+            // Ustawiamy kolor dla TankEnemy
+            Visual.Fill = System.Windows.Media.Brushes.Green;
+        }
+    }
+
+    public class BasicEnemy : Enemy
+    {
+        public BasicEnemy(double x, double y)
+            : base(x, y, EnemyType.Basic)
+        {
+            // Ustawiamy kolor dla BasicEnemy
+            Visual.Fill = System.Windows.Media.Brushes.Red;
+        }
+    }
+
+    public class MageEnemy : Enemy
+    {
+        public MageEnemy(double x, double y)
+            : base(x, y, EnemyType.Mage)
+        {
+            // Ustawiamy kolor dla MageEnemy
+            Visual.Fill = System.Windows.Media.Brushes.Blue;
+        }
+    }
+
+    public class SpiderEnemy : Enemy
+    {
+        public SpiderEnemy(double x, double y)
+            : base(x, y, EnemyType.Spider)
+        {
+            // Ustawiamy kolor dla SpiderEnemy
+            Visual.Fill = System.Windows.Media.Brushes.Purple;
+        }
+    }
 }

@@ -30,7 +30,7 @@ namespace Space_Intruder.Class
 
             // Ustawiamy pozycję początkową pocisku
             Canvas.SetLeft(visual, startX + 20); // 20 to offset, aby pocisk był na środku gracza
-            Canvas.SetBottom(visual, startY);
+            Canvas.SetBottom(visual, startY + 30);
 
             // Dodajemy pocisk do canvas
             canvas.Children.Add(visual);
@@ -76,6 +76,13 @@ namespace Space_Intruder.Class
                     enemies.Remove(enemy);
                     canvas.Children.Remove(visual);
                     timer.Stop();
+
+                    // Sprawdzamy, czy wszyscy przeciwnicy zostali zniszczeni
+                    if (enemies.Count == 0)
+                    {
+                        MessageBox.Show("Wygrałeś!"); // Wyświetlamy komunikat
+                    }
+
                     break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
                 }
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Space_Intruder.Class;
 
@@ -13,11 +14,26 @@ namespace Space_Intruder
         private double pozycjaX = 200;
         private List<Enemy> enemies = new List<Enemy>(); // Lista przeciwników
 
+        // Animacja ruchu gracza
+        private Storyboard moveStoryboard;
+        private DoubleAnimation moveAnimation;
+
         public MainWindow()
         {
             InitializeComponent();
             Canvas.SetLeft(Klocek, pozycjaX);
             Canvas.SetBottom(Klocek, 20); // Umieszczenie 20px od dolnej krawędzi
+
+            // Inicjalizacja animacji
+            moveStoryboard = new Storyboard();
+            moveAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(200), // Czas trwania animacji
+                EasingFunction = new QuadraticEase() // Funkcja płynności
+            };
+            Storyboard.SetTarget(moveAnimation, Klocek);
+            Storyboard.SetTargetProperty(moveAnimation, new PropertyPath("(Canvas.Left)"));
+            moveStoryboard.Children.Add(moveAnimation);
 
             // Uruchamiamy główną pętlę gry
             DispatcherTimer gameTimer = new DispatcherTimer();
@@ -36,7 +52,7 @@ namespace Space_Intruder
 
         private void CreateEnemies()
         {
-            int enemyRows = 2; // Liczba rzędów przeciwników
+            int enemyRows = 4; // Liczba rzędów przeciwników (każdy rząd to inna klasa)
             int enemyColumns = 6; // Liczba przeciwników w rzędzie
             double enemySpacingX = 80; // Odstęp między przeciwnikami w poziomie
             double enemySpacingY = 60; // Odstęp między rzędami przeciwników
@@ -50,8 +66,27 @@ namespace Space_Intruder
                     double x = startX + col * enemySpacingX;
                     double y = startY - row * enemySpacingY; // Przeciwnicy są ustawieni od góry
 
-                    // Tworzymy przeciwnika
-                    Enemy enemy = new Enemy(x, y, EnemyType.Basic); // Możesz zmienić typ przeciwnika
+                    Enemy enemy;
+
+                    // Tworzymy przeciwnika w zależności od rzędu
+                    switch (row)
+                    {
+                        case 0:
+                            enemy = new BasicEnemy(x, y); // Pierwszy rząd: BasicEnemy
+                            break;
+                        case 1:
+                            enemy = new MageEnemy(x, y); // Drugi rząd: MageEnemy
+                            break;
+                        case 2:
+                            enemy = new TankEnemy(x, y); // Trzeci rząd: TankEnemy
+                            break;
+                        case 3:
+                            enemy = new SpiderEnemy(x, y); // Czwarty rząd: SpiderEnemy
+                            break;
+                        default:
+                            throw new InvalidOperationException("Nieznany typ przeciwnika");
+                    }
+
                     enemies.Add(enemy);
 
                     // Dodajemy przeciwnika do canvas
@@ -64,14 +99,32 @@ namespace Space_Intruder
         {
             const double krok = 10;
 
-            // Obsługa ruchu
+            // Oblicz nową pozycję X
+            double newX = pozycjaX;
+
             if (e.Key == Key.Left && pozycjaX > 0)
             {
-                pozycjaX -= krok;
+                newX = pozycjaX - krok;
             }
             else if (e.Key == Key.Right && pozycjaX < Width - Klocek.Width - 16)
             {
-                pozycjaX += krok;
+                newX = pozycjaX + krok;
+            }
+
+            // Uruchom animację tylko jeśli pozycja się zmienia
+            if (newX != pozycjaX)
+            {
+                // Zatrzymaj poprzednią animację
+                moveStoryboard.Stop();
+
+                // Ustaw nową pozycję docelową
+                moveAnimation.To = newX;
+
+                // Uruchom animację
+                moveStoryboard.Begin();
+
+                // Zaktualizuj pozycję X
+                pozycjaX = newX;
             }
 
             // Strzał
@@ -81,11 +134,8 @@ namespace Space_Intruder
                 double klocekY = Canvas.GetBottom(Klocek);
 
                 // Tworzymy pocisk i przekazujemy listę przeciwników
-                Pocisk pocisk = new Pocisk(2, klocekX, klocekY, MyCanvas, enemies);
+                Pocisk pocisk = new Pocisk(5, klocekX, klocekY, MyCanvas, enemies);
             }
-
-            // Aktualizowanie pozycji gracza
-            Canvas.SetLeft(Klocek, pozycjaX);
         }
 
         private void GameLoop(object sender, EventArgs e)
@@ -106,13 +156,6 @@ namespace Space_Intruder
                     double currentY = Canvas.GetBottom(enemy.Visual);
                     Canvas.SetBottom(enemy.Visual, currentY - 10); // 10 to wartość przesunięcia w dół
                 }
-            }
-
-            // Strzelanie przeciwników (opcjonalnie)
-            foreach (var enemy in enemies)
-            {
-                enemy.Shoot(MyCanvas);
-                enemy.UpdateBullets();
             }
         }
     }
