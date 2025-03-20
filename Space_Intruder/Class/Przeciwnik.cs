@@ -1,6 +1,7 @@
-﻿using System.Numerics;
+﻿using System;
+using System.IO;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -8,21 +9,28 @@ namespace Space_Intruder.Class
 {
     public class Enemy
     {
-        public Rectangle Visual { get; private set; }
+        public Image Visual { get; private set; } // Zmieniamy Rectangle na Image
         public EnemyType Type { get; private set; }
         public double Speed { get; private set; } = 2; // Prędkość przeciwnika
         public int Direction { get; set; } = 1; // 1 = prawo, -1 = lewo
         public int Health { get; set; } // Liczba żyć przeciwnika
 
+        protected string imagePath;
+
         public Enemy(double x, double y, EnemyType type, int health)
         {
             Type = type;
             Health = health;
-            Visual = new Rectangle
+
+            // Ustalamy ścieżkę do obrazu
+            imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images", $"{type.ToString()}.png");
+
+            // Tworzymy obrazek
+            Visual = new Image
             {
                 Width = 50,
                 Height = 50,
-                Fill = System.Windows.Media.Brushes.Red // Przykładowy kolor
+                Source = new BitmapImage(new Uri(imagePath)) // Ładujemy obraz z pliku
             };
 
             Canvas.SetLeft(Visual, x);
@@ -60,7 +68,7 @@ namespace Space_Intruder.Class
         public TankEnemy(double x, double y)
             : base(x, y, EnemyType.Tank, 3) // TankEnemy ma 3 życia
         {
-            Visual.Fill = System.Windows.Media.Brushes.Green;
+            // W przypadku klas dziedziczących nie musimy zmieniać obrazu, ponieważ jest on ładowany przez klasę bazową
         }
     }
 
@@ -69,7 +77,7 @@ namespace Space_Intruder.Class
         public BasicEnemy(double x, double y)
             : base(x, y, EnemyType.Basic, 1) // BasicEnemy ma 1 życie
         {
-            Visual.Fill = System.Windows.Media.Brushes.Red;
+            // Podobnie jak w przypadku TankEnemy, obraz jest ustalany w klasie bazowej
         }
     }
 
@@ -84,7 +92,6 @@ namespace Space_Intruder.Class
         {
             this.canvas = canvas;
             this.player = player; // Przekazujemy gracza
-            Visual.Fill = System.Windows.Media.Brushes.Blue;
 
             // Inicjalizacja timera do strzelania
             shootTimer = new DispatcherTimer();
@@ -105,7 +112,7 @@ namespace Space_Intruder.Class
             double startY = Canvas.GetBottom(this.Visual);
 
             // Tworzymy pocisk i przekazujemy listę przeciwników oraz gracza (Klocek)
-            Pocisk pocisk = new Pocisk("mag" ,5, startX, startY, canvas, new List<Enemy>(), player, -1); // -1 oznacza kierunek w dół
+            Pocisk pocisk = new Pocisk("mag", 5, startX, startY, canvas, new List<Enemy>(), player, -1); // -1 oznacza kierunek w dół
         }
 
         public void StopShooting()
@@ -119,12 +126,12 @@ namespace Space_Intruder.Class
         private Canvas canvas; // Canvas, na którym znajduje się przeciwnik
         private DispatcherTimer shootTimer; // Timer do strzelania
         private Rectangle player; // Gracz (Klocek)
+
         public SpiderEnemy(double x, double y, Canvas canvas, Rectangle player)
-            : base(x, y, EnemyType.Spider, 1) // MageEnemy ma 1 życie
+            : base(x, y, EnemyType.Spider, 1) // SpiderEnemy ma 1 życie
         {
             this.canvas = canvas;
             this.player = player; // Przekazujemy gracza
-            Visual.Fill = System.Windows.Media.Brushes.Yellow;
 
             // Inicjalizacja timera do strzelania
             shootTimer = new DispatcherTimer();

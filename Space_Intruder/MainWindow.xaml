@@ -11,14 +11,16 @@
         KeyDown="Window_KeyDown">
 
     <Grid>
-        <Canvas x:Name="MyCanvas" Background="Black">
+        <Canvas x:Name="MyCanvas">
             <!-- Gracz (Klocek) -->
             <Rectangle x:Name="Klocek" Width="50" Height="50">
                 <Rectangle.Fill>
-                    <ImageBrush ImageSource="C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\Zdjecia\milyczarnypan.jfif" Stretch="UniformToFill"/>
+                    <ImageBrush ImageSource="pack://application:,,,/Images/boss.png" Stretch="UniformToFill"/>
                 </Rectangle.Fill>
             </Rectangle>
+            <Canvas.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Images/background.jpg" Stretch="UniformToFill"/>
+            </Canvas.Background>
         </Canvas>
     </Grid>
-
 </Window>
