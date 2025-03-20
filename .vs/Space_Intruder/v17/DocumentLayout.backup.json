@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\pocisk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\class\\przeciwnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\przeciwnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "Space_Intruder\\Class\\Pocisk.cs",
               "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Pocisk.cs",
               "RelativeToolTip": "Space_Intruder\\Class\\Pocisk.cs",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAwwFoAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAE4AAAAA8DIzMzPxv1kAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T08:09:36.945Z",
               "IsPinned": true,
@@ -44,13 +44,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "Space_Intruder\\MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
               "RelativeToolTip": "Space_Intruder\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAH4AAABAmZmZmZkwwKAAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAODMzMzP5v7IAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T07:54:31.374Z",
               "IsPinned": true,
@@ -58,13 +58,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Przeciwnik.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Przeciwnik.cs",
               "RelativeDocumentMoniker": "Space_Intruder\\Class\\Przeciwnik.cs",
               "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Przeciwnik.cs",
               "RelativeToolTip": "Space_Intruder\\Class\\Przeciwnik.cs",
-              "ViewState": "AgIAAD4AAACAAQAAAAAqwEcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFgAAAAglpmZmRkSwIYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T10:41:16.94Z",
               "EditorCaption": ""

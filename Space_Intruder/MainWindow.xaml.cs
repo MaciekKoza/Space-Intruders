@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Space_Intruder.Class;
@@ -13,10 +14,13 @@ namespace Space_Intruder
     {
         private double pozycjaX = 200;
         private List<Enemy> enemies = new List<Enemy>(); // Lista przeciwników
+        private bool isGameOver = false; // Flaga określająca, czy gra jest zatrzymana
 
         // Animacja ruchu gracza
         private Storyboard moveStoryboard;
         private DoubleAnimation moveAnimation;
+
+        public double krok = 20;
 
         public MainWindow()
         {
@@ -72,16 +76,16 @@ namespace Space_Intruder
                     switch (row)
                     {
                         case 0:
-                            enemy = new BasicEnemy(x, y); // Pierwszy rząd: BasicEnemy
+                            enemy = new BasicEnemy(x, y); // Pierwszy rząd: BasicEnemy (1 życie)
                             break;
                         case 1:
-                            enemy = new MageEnemy(x, y); // Drugi rząd: MageEnemy
+                            enemy = new MageEnemy(x, y, MyCanvas, Klocek); // Drugi rząd: MageEnemy (1 życie)
                             break;
                         case 2:
-                            enemy = new TankEnemy(x, y); // Trzeci rząd: TankEnemy
+                            enemy = new TankEnemy(x, y); // Trzeci rząd: TankEnemy (3 życia)
                             break;
                         case 3:
-                            enemy = new SpiderEnemy(x, y); // Czwarty rząd: SpiderEnemy
+                            enemy = new SpiderEnemy(x, y, MyCanvas, Klocek); // Czwarty rząd: SpiderEnemy (1 życie)
                             break;
                         default:
                             throw new InvalidOperationException("Nieznany typ przeciwnika");
@@ -97,8 +101,6 @@ namespace Space_Intruder
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            const double krok = 10;
-
             // Oblicz nową pozycję X
             double newX = pozycjaX;
 
@@ -133,8 +135,8 @@ namespace Space_Intruder
                 double klocekX = Canvas.GetLeft(Klocek);
                 double klocekY = Canvas.GetBottom(Klocek);
 
-                // Tworzymy pocisk i przekazujemy listę przeciwników
-                Pocisk pocisk = new Pocisk(5, klocekX, klocekY, MyCanvas, enemies);
+                // Tworzymy pocisk i przekazujemy listę przeciwników oraz gracza (Klocek)
+                Pocisk pocisk = new Pocisk("bohater" ,5, klocekX, klocekY, MyCanvas, enemies, Klocek);
             }
         }
 
@@ -158,5 +160,23 @@ namespace Space_Intruder
                 }
             }
         }
+
+        public void SlowDownPlayer()
+        {
+            double slowSpeed = 0; // Zmniejszona prędkość ruchu
+            double normalSpeed = 20; // Domyślna prędkość
+
+            krok = slowSpeed; // Zmniejszamy prędkość
+
+            DispatcherTimer restoreSpeedTimer = new DispatcherTimer();
+            restoreSpeedTimer.Interval = TimeSpan.FromSeconds(2);
+            restoreSpeedTimer.Tick += (s, e) =>
+            {
+                krok = normalSpeed; // Przywracamy normalną prędkość po 2 sekundach
+                restoreSpeedTimer.Stop();
+            };
+            restoreSpeedTimer.Start();
+        }
+
     }
 }

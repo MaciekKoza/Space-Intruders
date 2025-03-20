@@ -1,91 +1,179 @@
-﻿using System.Windows.Controls;
+﻿using Space_Intruder.Class;
+using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Shapes;
-using System.Windows.Threading;
-using static Space_Intruder.Class.Enemy;
+using System.Windows.Media;
+using Space_Intruder;
 
-namespace Space_Intruder.Class
+public class Pocisk
 {
-    public class Pocisk
+    private Rectangle visual; // Wizualna reprezentacja pocisku
+    private double speed; // Prędkość pocisku
+    private Canvas canvas; // Canvas, na którym znajduje się pocisk
+    private List<Enemy> enemies; // Lista przeciwników
+    private DispatcherTimer timer; // Timer do aktualizacji pozycji pocisku
+    private int direction; // Kierunek pocisku: 1 = w górę, -1 = w dół
+    private Rectangle player; // Gracz (Klocek)
+    private string postac;
+    private Brush color = Brushes.White;
+    private bool isSpiderShot;
+
+
+    public Pocisk(string postac, double speed, double startX, double startY, Canvas canvas, List<Enemy> enemies, Rectangle player, int direction = 1)
     {
-        private Rectangle visual; // Wizualna reprezentacja pocisku
-        private double speed; // Prędkość pocisku
-        private Canvas canvas; // Canvas, na którym znajduje się pocisk
-        private List<Enemy> enemies; // Lista przeciwników
-        private DispatcherTimer timer; // Timer do aktualizacji pozycji pocisku
+        this.speed = speed;
+        this.canvas = canvas;
+        this.enemies = enemies;
+        this.direction = direction;
+        this.player = player;
+        this.postac = postac;
+        this.isSpiderShot = postac == "spider"; // Oznaczamy pocisk od spidera
 
-        public Pocisk(double speed, double startX, double startY, Canvas canvas, List<Enemy> enemies)
+        switch (postac)
         {
-            this.speed = speed;
-            this.canvas = canvas;
-            this.enemies = enemies;
+            case "bohater":
+                color = Brushes.Cyan;
+                break;
+            case "mag":
+                color = Brushes.DarkViolet;
+                break;
+            case "spider":
+                color = Brushes.White;
+                break;
+            default:
+                break;
+        };
 
-            // Tworzymy wizualną reprezentację pocisku
-            visual = new Rectangle
-            {
-                Width = 5,
-                Height = 15,
-                Fill = System.Windows.Media.Brushes.Yellow
-            };
-
-            // Ustawiamy pozycję początkową pocisku
-            Canvas.SetLeft(visual, startX + 20); // 20 to offset, aby pocisk był na środku gracza
-            Canvas.SetBottom(visual, startY + 30);
-
-            // Dodajemy pocisk do canvas
-            canvas.Children.Add(visual);
-
-            // Uruchamiamy timer do aktualizacji pozycji pocisku
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
-            timer.Tick += Timer_Tick;
-            timer.Start();
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
+        visual = new Rectangle
         {
-            // Przesuwamy pocisk do góry
-            double currentY = Canvas.GetBottom(visual);
-            Canvas.SetBottom(visual, currentY + speed);
+            Width = 5,
+            Height = 15,
+            Fill = color
+        };
 
-            // Sprawdzamy kolizję z przeciwnikami
+        Canvas.SetLeft(visual, startX);
+        Canvas.SetBottom(visual, startY);
+        canvas.Children.Add(visual);
+
+        timer = new DispatcherTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(16);
+        timer.Tick += Timer_Tick;
+        timer.Start();
+    }
+
+    private void Timer_Tick(object sender, EventArgs e)
+    {
+        // Przesuwamy pocisk w zależności od kierunku
+        double currentY = Canvas.GetBottom(visual);
+        Canvas.SetBottom(visual, currentY + speed * direction);
+
+        // Sprawdzamy kolizję z przeciwnikami (jeśli pocisk leci w górę)
+        if (direction == 1)
+        {
             CheckCollision();
-
-            // Jeśli pocisk wyjdzie poza canvas, usuwamy go
-            if (currentY > canvas.ActualHeight)
-            {
-                timer.Stop();
-                canvas.Children.Remove(visual);
-            }
+        }
+        // Sprawdzamy kolizję z graczem (jeśli pocisk leci w dół)
+        else if (direction == -1)
+        {
+            CheckPlayerCollision();
         }
 
-        private void CheckCollision()
+        // Jeśli pocisk wyjdzie poza canvas, usuwamy go
+        if (currentY > canvas.ActualHeight || currentY < 0)
         {
-            // Pobieramy pozycję i rozmiar pocisku
-            Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
+            timer.Stop();
+            canvas.Children.Remove(visual);
+        }
+    }
 
-            // Sprawdzamy kolizję z każdym przeciwnikiem
-            foreach (var enemy in enemies.ToList()) // Używamy ToList(), aby uniknąć modyfikacji kolekcji podczas iteracji
+    private void CheckPlayerCollision()
+    {
+        // Pobieramy pozycję i rozmiar pocisku
+        Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
+
+        // Pobieramy pozycję i rozmiar gracza (Klocek)
+        Rect playerRect = new Rect(Canvas.GetLeft(player), Canvas.GetBottom(player), player.Width, player.Height);
+
+        // Sprawdzamy kolizję z graczem
+        if (pociskRect.IntersectsWith(playerRect))
+        {
+            if(postac == "spider")
             {
-                Rect enemyRect = new Rect(Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual), enemy.Visual.Width, enemy.Visual.Height);
+                // Kolizja! Usuwamy pocisk
+                canvas.Children.Remove(visual);
+                timer.Stop();
 
-                if (pociskRect.IntersectsWith(enemyRect))
+                // Spowolnienie ruchu gracza, jeśli to strzał od spidera
+                if (isSpiderShot)
                 {
-                    // Kolizja! Usuwamy przeciwnika i pocisk
-                    canvas.Children.Remove(enemy.Visual);
-                    enemies.Remove(enemy);
-                    canvas.Children.Remove(visual);
-                    timer.Stop();
-
-                    // Sprawdzamy, czy wszyscy przeciwnicy zostali zniszczeni
-                    if (enemies.Count == 0)
+                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                    if (mainWindow != null)
                     {
-                        MessageBox.Show("Wygrałeś!"); // Wyświetlamy komunikat
+                        mainWindow.SlowDownPlayer();
+                    }
+                }
+            }
+            else if(postac == "mag")
+            {
+                // Kolizja! Usuwamy pocisk
+                canvas.Children.Remove(visual);
+                timer.Stop();
+
+                // Tutaj można dodać logikę obrażeń dla gracza
+                MessageBox.Show("Gracz został trafiony!");
+            }
+            
+        }
+    }
+
+
+    private void CheckCollision()
+    {
+        // Pobieramy pozycję i rozmiar pocisku
+        Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
+
+        // Sprawdzamy kolizję z każdym przeciwnikiem
+        foreach (var enemy in enemies.ToList()) // Używamy ToList(), aby uniknąć modyfikacji kolekcji podczas iteracji
+        {
+            Rect enemyRect = new Rect(Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual), enemy.Visual.Width, enemy.Visual.Height);
+
+            if (pociskRect.IntersectsWith(enemyRect))
+            {
+                // Kolizja! Zadajemy obrażenia przeciwnikowi
+                enemy.Health--;
+
+                // Jeśli przeciwnik nie ma już żyć, usuwamy go
+                if (enemy.Health <= 0)
+                {
+                    // Jeśli przeciwnik to MageEnemy, zatrzymujemy jego strzelanie
+                    if (enemy is MageEnemy mageEnemy)
+                    {
+                        mageEnemy.StopShooting();
+                    }
+                    // Jeśli przeciwnik to MageEnemy, zatrzymujemy jego strzelanie
+                    if (enemy is SpiderEnemy spiderEnemy)
+                    {
+                        spiderEnemy.StopShooting();
                     }
 
-                    break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
+                    canvas.Children.Remove(enemy.Visual);
+                    enemies.Remove(enemy);
                 }
+
+                // Usuwamy pocisk
+                canvas.Children.Remove(visual);
+                timer.Stop();
+
+                // Sprawdzamy, czy wszyscy przeciwnicy zostali zniszczeni
+                if (enemies.Count == 0)
+                {
+                    MessageBox.Show("Wygrałeś!"); // Wyświetlamy komunikat
+                }
+
+                break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
             }
         }
     }
+
 }
