@@ -13,95 +13,57 @@ namespace Space_Intruder
     public partial class MainWindow : Window
     {
         private double pozycjaX = 200;
-        private List<Enemy> enemies = new List<Enemy>(); // Lista przeciwników
-        private bool isGameOver = false; // Flaga określająca, czy gra jest zatrzymana
-
-        // Animacja ruchu gracza
+        private bool isGameOver = false;
         private Storyboard moveStoryboard;
         private DoubleAnimation moveAnimation;
-
         public double krok = 20;
+        private Level_Gry gameLevel;
+        private DispatcherTimer gameTimer;
+
+        // Statustyki Bohatera
+
+        private int life = 3;
 
         public MainWindow()
         {
             InitializeComponent();
-            Canvas.SetLeft(Klocek, pozycjaX);
-            Canvas.SetBottom(Klocek, 20); // Umieszczenie 20px od dolnej krawędzi
+            InitializeGame();
+        }
 
-            // Inicjalizacja animacji
+        private void InitializeGame()
+        {
+            Canvas.SetLeft(Klocek, pozycjaX);
+            Canvas.SetBottom(Klocek, 20);
+
+            // Inicjalizacja animacji ruchu
             moveStoryboard = new Storyboard();
             moveAnimation = new DoubleAnimation
             {
-                Duration = TimeSpan.FromMilliseconds(200), // Czas trwania animacji
-                EasingFunction = new QuadraticEase() // Funkcja płynności
+                Duration = TimeSpan.FromMilliseconds(200),
+                EasingFunction = new QuadraticEase()
             };
             Storyboard.SetTarget(moveAnimation, Klocek);
             Storyboard.SetTargetProperty(moveAnimation, new PropertyPath("(Canvas.Left)"));
             moveStoryboard.Children.Add(moveAnimation);
 
-            // Uruchamiamy główną pętlę gry
-            DispatcherTimer gameTimer = new DispatcherTimer();
-            gameTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
+            // Inicjalizacja poziomów gry
+            gameLevel = new Level_Gry(MyCanvas, Klocek);
+            gameLevel.LoadLevel(1);
+
+            // Uruchomienie głównej pętli gry
+            gameTimer = new DispatcherTimer();
+            gameTimer.Interval = TimeSpan.FromMilliseconds(16);
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
-            // Tworzymy przeciwników po załadowaniu okna
-            this.Loaded += Window_Loaded;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            CreateEnemies();
-        }
-
-        private void CreateEnemies()
-        {
-            int enemyRows = 4; // Liczba rzędów przeciwników (każdy rząd to inna klasa)
-            int enemyColumns = 6; // Liczba przeciwników w rzędzie
-            double enemySpacingX = 80; // Odstęp między przeciwnikami w poziomie
-            double enemySpacingY = 60; // Odstęp między rzędami przeciwników
-            double startX = 50; // Początkowa pozycja X pierwszego przeciwnika
-            double startY = MyCanvas.ActualHeight - 100; // Początkowa pozycja Y przeciwników (na górze ekranu)
-
-            for (int row = 0; row < enemyRows; row++)
-            {
-                for (int col = 0; col < enemyColumns; col++)
-                {
-                    double x = startX + col * enemySpacingX;
-                    double y = startY - row * enemySpacingY; // Przeciwnicy są ustawieni od góry
-
-                    Enemy enemy;
-
-                    // Tworzymy przeciwnika w zależności od rzędu
-                    switch (row)
-                    {
-                        case 0:
-                            enemy = new BasicEnemy(x, y); // Pierwszy rząd: BasicEnemy (1 życie)
-                            break;
-                        case 1:
-                            enemy = new MageEnemy(x, y, MyCanvas, Klocek); // Drugi rząd: MageEnemy (1 życie)
-                            break;
-                        case 2:
-                            enemy = new TankEnemy(x, y); // Trzeci rząd: TankEnemy (3 życia)
-                            break;
-                        case 3:
-                            enemy = new SpiderEnemy(x, y, MyCanvas, Klocek); // Czwarty rząd: SpiderEnemy (1 życie)
-                            break;
-                        default:
-                            throw new InvalidOperationException("Nieznany typ przeciwnika");
-                    }
-
-                    enemies.Add(enemy);
-
-                    // Dodajemy przeciwnika do canvas
-                    MyCanvas.Children.Add(enemy.Visual);
-                }
-            }
+            this.Loaded += (sender, e) => gameLevel.LoadLevel(1);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            // Oblicz nową pozycję X
+            if (isGameOver) return;
+
+            // Obsługa ruchu gracza
             double newX = pozycjaX;
 
             if (e.Key == Key.Left && pozycjaX > 0)
@@ -113,70 +75,115 @@ namespace Space_Intruder
                 newX = pozycjaX + krok;
             }
 
-            // Uruchom animację tylko jeśli pozycja się zmienia
             if (newX != pozycjaX)
             {
-                // Zatrzymaj poprzednią animację
                 moveStoryboard.Stop();
-
-                // Ustaw nową pozycję docelową
                 moveAnimation.To = newX;
-
-                // Uruchom animację
                 moveStoryboard.Begin();
-
-                // Zaktualizuj pozycję X
                 pozycjaX = newX;
             }
 
-            // Strzał
+            // Obsługa strzału
             if (e.Key == Key.Space)
             {
-                double klocekX = Canvas.GetLeft(Klocek);
-                double klocekY = Canvas.GetBottom(Klocek);
-
-                // Tworzymy pocisk i przekazujemy listę przeciwników oraz gracza (Klocek)
-                Pocisk pocisk = new Pocisk("bohater" ,5, klocekX, klocekY, MyCanvas, enemies, Klocek);
+                ShootPlayerBullet();
             }
+        }
+
+        private void ShootPlayerBullet()
+        {
+            double klocekX = Canvas.GetLeft(Klocek);
+            double klocekY = Canvas.GetBottom(Klocek);
+            var bullet = new Pocisk(
+                "bohater",
+                5,
+                klocekX,
+                klocekY,
+                MyCanvas,
+                gameLevel.GetCurrentEnemies(),
+                Klocek
+            );
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
-            // Poruszanie przeciwników
-            foreach (var enemy in enemies)
+            if (isGameOver) return;
+
+            // Sprawdzenie czy poziom został ukończony
+            if (gameLevel.AreAllEnemiesDefeated())
+            {
+                if (gameLevel.IsGameCompleted)
+                {
+                    EndGame(true); // Wygrana
+                }
+                else
+                {
+                    gameLevel.NextLevel();
+                    current_level.Text =$"Level {gameLevel.CurrentLevel.ToString()}";
+                }
+            }
+
+            // Aktualizacja przeciwników
+            foreach (var enemy in gameLevel.GetCurrentEnemies())
             {
                 enemy.Move();
 
-                // Sprawdzamy, czy przeciwnik dotarł do krawędzi ekranu
+                // Sprawdzenie kolizji z krawędziami
                 double enemyX = Canvas.GetLeft(enemy.Visual);
                 if (enemyX <= 0 || enemyX + enemy.Visual.Width >= MyCanvas.ActualWidth)
                 {
-                    // Zmieniamy kierunek ruchu
                     enemy.Direction *= -1;
-
-                    // Przesuwamy przeciwnika w dół (opcjonalnie)
                     double currentY = Canvas.GetBottom(enemy.Visual);
-                    Canvas.SetBottom(enemy.Visual, currentY - 10); // 10 to wartość przesunięcia w dół
+                    Canvas.SetBottom(enemy.Visual, currentY - 10);
                 }
             }
         }
 
+        private void EndGame(bool isWin)
+        {
+            isGameOver = true;
+            gameTimer.Stop();
+
+            foreach (var enemy in gameLevel.GetCurrentEnemies())
+            {
+                if (enemy is MageEnemy mage) mage.StopShooting();
+                if (enemy is SpiderEnemy spider) spider.StopShooting();
+            }
+
+            MessageBox.Show(isWin ? "Gratulacje! Wygrałeś grę!" : "Przegrałeś! Koniec gry.");
+        }
+
         public void SlowDownPlayer()
         {
-            double slowSpeed = 0; // Zmniejszona prędkość ruchu
-            double normalSpeed = 20; // Domyślna prędkość
+            double slowSpeed = 0;
+            double normalSpeed = 20;
 
-            krok = slowSpeed; // Zmniejszamy prędkość
+            krok = slowSpeed;
 
-            DispatcherTimer restoreSpeedTimer = new DispatcherTimer();
+            var restoreSpeedTimer = new DispatcherTimer();
             restoreSpeedTimer.Interval = TimeSpan.FromSeconds(2);
             restoreSpeedTimer.Tick += (s, e) =>
             {
-                krok = normalSpeed; // Przywracamy normalną prędkość po 2 sekundach
+                krok = normalSpeed;
                 restoreSpeedTimer.Stop();
             };
             restoreSpeedTimer.Start();
         }
 
+        public void PlayerHit()
+        {
+            life--;
+            UpdateLifeDisplay();
+
+            if (life <= 0)
+            {
+                EndGame(false); // Game over
+            }
+        }
+
+        private void UpdateLifeDisplay()
+        {
+            if(life >= 0) { current_life.Text = new string('❤', life); }
+        }
     }
 }

@@ -9,49 +9,61 @@ namespace Space_Intruder.Class
 {
     public class Enemy
     {
-        public Image Visual { get; private set; } // Zmieniamy Rectangle na Image
+        public Image Visual { get; private set; }
         public EnemyType Type { get; private set; }
-        public double Speed { get; private set; } = 2; // Prędkość przeciwnika
-        public int Direction { get; set; } = 1; // 1 = prawo, -1 = lewo
-        public int Health { get; set; } // Liczba żyć przeciwnika
+        public double Speed { get; protected set; } = 2;
+        public int Direction { get; set; } = 1;
+        public int Health { get; set; }
+        public int BaseHealth { get; protected set; } = 1;
+        public double BaseSpeed { get; protected set; } = 2;
+        public double BaseAttackRate { get; protected set; } = 1.0;
 
         protected string imagePath;
+        protected int currentLevel = 1;
 
-        public Enemy(double x, double y, EnemyType type, int health)
+        public Enemy(double x, double y, EnemyType type, int health, int level)
         {
             Type = type;
-            Health = health;
+            currentLevel = level;
+            BaseHealth = health;
+            Health = CalculateScaledHealth(health, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
 
-            // Ustalamy ścieżkę do obrazu
             imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images", $"{type.ToString()}.png");
 
-            // Tworzymy obrazek
             Visual = new Image
             {
                 Width = 50,
                 Height = 50,
-                Source = new BitmapImage(new Uri(imagePath)) // Ładujemy obraz z pliku
+                Source = new BitmapImage(new Uri(imagePath))
             };
 
             Canvas.SetLeft(Visual, x);
             Canvas.SetBottom(Visual, y);
         }
 
+        protected int CalculateScaledHealth(int baseHealth, int level)
+        {
+            // Health increases by 0.5 per level (rounded up)
+            return baseHealth + (int)Math.Ceiling(level * 0.5);
+        }
+
+        protected double CalculateScaledSpeed(double baseSpeed, int level)
+        {
+            // Speed increases by 5% per level
+            return baseSpeed * (1 + (level * 0.05));
+        }
+
+        protected double CalculateScaledAttackRate(double baseRate, int level)
+        {
+            // Attack rate increases by 10% per level (lower number = faster)
+            return Math.Max(0.1, baseRate * Math.Pow(0.9, level));
+        }
+
         public void Move()
         {
-            // Przesuwamy przeciwnika w poziomie
             double newX = Canvas.GetLeft(Visual) + Speed * Direction;
             Canvas.SetLeft(Visual, newX);
-        }
-
-        public void Shoot(Canvas canvas)
-        {
-            // Logika strzelania przeciwnika
-        }
-
-        public void UpdateBullets()
-        {
-            // Logika aktualizacji pocisków przeciwnika
         }
     }
 
@@ -63,39 +75,52 @@ namespace Space_Intruder.Class
         Spider
     }
 
-    public class TankEnemy : Enemy
+    public class BasicEnemy : Enemy
     {
-        public TankEnemy(double x, double y)
-            : base(x, y, EnemyType.Tank, 3) // TankEnemy ma 3 życia
+        public BasicEnemy(double x, double y, int level)
+            : base(x, y, EnemyType.Basic, 1, level)
         {
-            // W przypadku klas dziedziczących nie musimy zmieniać obrazu, ponieważ jest on ładowany przez klasę bazową
+            BaseHealth = 1;
+            BaseSpeed = 2.0;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
         }
     }
 
-    public class BasicEnemy : Enemy
+    public class TankEnemy : Enemy
     {
-        public BasicEnemy(double x, double y)
-            : base(x, y, EnemyType.Basic, 1) // BasicEnemy ma 1 życie
+        public TankEnemy(double x, double y, int level)
+            : base(x, y, EnemyType.Tank, 3, level)
         {
-            // Podobnie jak w przypadku TankEnemy, obraz jest ustalany w klasie bazowej
+            BaseHealth = 3;
+            BaseSpeed = 1.5;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
         }
     }
 
     public class MageEnemy : Enemy
     {
-        private Canvas canvas; // Canvas, na którym znajduje się przeciwnik
-        private DispatcherTimer shootTimer; // Timer do strzelania
-        private Rectangle player; // Gracz (Klocek)
+        private Canvas canvas;
+        private DispatcherTimer shootTimer;
+        private Rectangle player;
+        private double attackRate;
 
-        public MageEnemy(double x, double y, Canvas canvas, Rectangle player)
-            : base(x, y, EnemyType.Mage, 1) // MageEnemy ma 1 życie
+        public MageEnemy(double x, double y, Canvas canvas, Rectangle player, int level)
+            : base(x, y, EnemyType.Mage, 1, level)
         {
             this.canvas = canvas;
-            this.player = player; // Przekazujemy gracza
+            this.player = player;
+            BaseHealth = 1;
+            BaseSpeed = 1.8;
+            BaseAttackRate = 1.0;
 
-            // Inicjalizacja timera do strzelania
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+            attackRate = CalculateScaledAttackRate(BaseAttackRate, level);
+
             shootTimer = new DispatcherTimer();
-            shootTimer.Interval = TimeSpan.FromSeconds(1); // Strzelaj co sekundę
+            shootTimer.Interval = TimeSpan.FromSeconds(attackRate);
             shootTimer.Tick += ShootTimer_Tick;
             shootTimer.Start();
         }
@@ -107,35 +132,39 @@ namespace Space_Intruder.Class
 
         public void Shoot()
         {
-            // Tworzymy pocisk, który leci w dół
-            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2; // Pocisk startuje na środku przeciwnika
+            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
             double startY = Canvas.GetBottom(this.Visual);
-
-            // Tworzymy pocisk i przekazujemy listę przeciwników oraz gracza (Klocek)
-            Pocisk pocisk = new Pocisk("mag", 5, startX, startY, canvas, new List<Enemy>(), player, -1); // -1 oznacza kierunek w dół
+            Pocisk pocisk = new Pocisk("mag", 5 + (currentLevel * 0.5), startX, startY, canvas, new List<Enemy>(), player, -1);
         }
 
         public void StopShooting()
         {
-            shootTimer.Stop(); // Zatrzymujemy timer strzelania
+            shootTimer?.Stop();
         }
     }
 
     public class SpiderEnemy : Enemy
     {
-        private Canvas canvas; // Canvas, na którym znajduje się przeciwnik
-        private DispatcherTimer shootTimer; // Timer do strzelania
-        private Rectangle player; // Gracz (Klocek)
+        private Canvas canvas;
+        private DispatcherTimer shootTimer;
+        private Rectangle player;
+        private double attackRate;
 
-        public SpiderEnemy(double x, double y, Canvas canvas, Rectangle player)
-            : base(x, y, EnemyType.Spider, 1) // SpiderEnemy ma 1 życie
+        public SpiderEnemy(double x, double y, Canvas canvas, Rectangle player, int level)
+            : base(x, y, EnemyType.Spider, 1, level)
         {
             this.canvas = canvas;
-            this.player = player; // Przekazujemy gracza
+            this.player = player;
+            BaseHealth = 1;
+            BaseSpeed = 2.2;
+            BaseAttackRate = 2.0;
 
-            // Inicjalizacja timera do strzelania
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+            attackRate = CalculateScaledAttackRate(BaseAttackRate, level);
+
             shootTimer = new DispatcherTimer();
-            shootTimer.Interval = TimeSpan.FromSeconds(2); // Strzelaj co sekundę
+            shootTimer.Interval = TimeSpan.FromSeconds(attackRate);
             shootTimer.Tick += ShootTimer_Tick;
             shootTimer.Start();
         }
@@ -147,17 +176,14 @@ namespace Space_Intruder.Class
 
         public void Shoot()
         {
-            // Tworzymy pocisk, który leci w dół
-            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2; // Pocisk startuje na środku przeciwnika
+            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
             double startY = Canvas.GetBottom(this.Visual);
-
-            // Tworzymy pocisk i przekazujemy listę przeciwników oraz gracza (Klocek)
-            Pocisk pocisk = new Pocisk("spider", 5, startX, startY, canvas, new List<Enemy>(), player, -1); // -1 oznacza kierunek w dół
+            Pocisk pocisk = new Pocisk("spider", 5 + (currentLevel * 0.3), startX, startY, canvas, new List<Enemy>(), player, -1);
         }
 
         public void StopShooting()
         {
-            shootTimer.Stop(); // Zatrzymujemy timer strzelania
+            shootTimer?.Stop();
         }
     }
 }

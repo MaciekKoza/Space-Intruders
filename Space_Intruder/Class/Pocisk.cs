@@ -89,21 +89,17 @@ public class Pocisk
 
     private void CheckPlayerCollision()
     {
-        // Pobieramy pozycję i rozmiar pocisku
         Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
-
-        // Pobieramy pozycję i rozmiar gracza (Klocek)
         Rect playerRect = new Rect(Canvas.GetLeft(player), Canvas.GetBottom(player), player.Width, player.Height);
 
-        // Sprawdzamy kolizję z graczem
         if (pociskRect.IntersectsWith(playerRect))
         {
-            if(postac == "spider")
-            {
-                // Kolizja! Usuwamy pocisk
-                canvas.Children.Remove(visual);
-                timer.Stop();
+            // Kolizja! Usuwamy pocisk
+            canvas.Children.Remove(visual);
+            timer.Stop();
 
+            if (postac == "spider")
+            {
                 // Spowolnienie ruchu gracza, jeśli to strzał od spidera
                 if (isSpiderShot)
                 {
@@ -114,16 +110,15 @@ public class Pocisk
                     }
                 }
             }
-            else if(postac == "mag")
+            else if (postac == "mag")
             {
-                // Kolizja! Usuwamy pocisk
-                canvas.Children.Remove(visual);
-                timer.Stop();
-
-                // Tutaj można dodać logikę obrażeń dla gracza
-                MessageBox.Show("Gracz został trafiony!");
+                // Zadajemy obrażenia graczowi
+                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.PlayerHit();
+                }
             }
-            
         }
     }
 
@@ -164,12 +159,6 @@ public class Pocisk
                 // Usuwamy pocisk
                 canvas.Children.Remove(visual);
                 timer.Stop();
-
-                // Sprawdzamy, czy wszyscy przeciwnicy zostali zniszczeni
-                if (enemies.Count == 0)
-                {
-                    MessageBox.Show("Wygrałeś!"); // Wyświetlamy komunikat
-                }
 
                 break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
             }

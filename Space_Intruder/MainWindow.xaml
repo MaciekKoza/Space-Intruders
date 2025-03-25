@@ -22,5 +22,7 @@
                 <ImageBrush ImageSource="pack://application:,,,/Images/background.jpg" Stretch="UniformToFill"/>
             </Canvas.Background>
         </Canvas>
+        <TextBlock x:Name="current_level" Text="Level 1" FontSize="24" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="current_life" Text="❤❤❤" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="30"/>
     </Grid>
 </Window>
