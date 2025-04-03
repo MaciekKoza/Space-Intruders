@@ -18,9 +18,10 @@ public class Pocisk
     private string postac;
     private Brush color = Brushes.White;
     private bool isSpiderShot;
+    private int damage; // Nowe pole - obrażenia pocisku
 
-
-    public Pocisk(string postac, double speed, double startX, double startY, Canvas canvas, List<Enemy> enemies, Rectangle player, int direction = 1)
+    public Pocisk(string postac, int damage, double speed, double startX, double startY,
+                 Canvas canvas, List<Enemy> enemies, Rectangle player, int direction = 1)
     {
         this.speed = speed;
         this.canvas = canvas;
@@ -28,7 +29,8 @@ public class Pocisk
         this.direction = direction;
         this.player = player;
         this.postac = postac;
-        this.isSpiderShot = postac == "spider"; // Oznaczamy pocisk od spidera
+        this.damage = damage; // Inicjalizacja obrażeń
+        this.isSpiderShot = postac == "spider";
 
         switch (postac)
         {
@@ -64,26 +66,21 @@ public class Pocisk
 
     private void Timer_Tick(object sender, EventArgs e)
     {
-        // Przesuwamy pocisk w zależności od kierunku
         double currentY = Canvas.GetBottom(visual);
         Canvas.SetBottom(visual, currentY + speed * direction);
 
-        // Sprawdzamy kolizję z przeciwnikami (jeśli pocisk leci w górę)
         if (direction == 1)
         {
             CheckCollision();
         }
-        // Sprawdzamy kolizję z graczem (jeśli pocisk leci w dół)
         else if (direction == -1)
         {
             CheckPlayerCollision();
         }
 
-        // Jeśli pocisk wyjdzie poza canvas, usuwamy go
         if (currentY > canvas.ActualHeight || currentY < 0)
         {
-            timer.Stop();
-            canvas.Children.Remove(visual);
+            Destroy();
         }
     }
 
@@ -94,75 +91,54 @@ public class Pocisk
 
         if (pociskRect.IntersectsWith(playerRect))
         {
-            // Kolizja! Usuwamy pocisk
-            canvas.Children.Remove(visual);
-            timer.Stop();
+            Destroy();
 
-            if (postac == "spider")
+            if (isSpiderShot)
             {
-                // Spowolnienie ruchu gracza, jeśli to strzał od spidera
-                if (isSpiderShot)
-                {
-                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-                    if (mainWindow != null)
-                    {
-                        mainWindow.SlowDownPlayer();
-                    }
-                }
+                (Application.Current.MainWindow as MainWindow)?.SlowDownPlayer();
             }
-            else if (postac == "mag")
-            {
-                // Zadajemy obrażenia graczowi
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-                if (mainWindow != null)
-                {
-                    mainWindow.PlayerHit();
-                }
-            }
+
+            // Zawsze zadajemy obrażenia, niezależnie od typu pocisku
+            (Application.Current.MainWindow as MainWindow)?.PlayerHit();
         }
     }
 
-
     private void CheckCollision()
     {
-        // Pobieramy pozycję i rozmiar pocisku
         Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
 
-        // Sprawdzamy kolizję z każdym przeciwnikiem
-        foreach (var enemy in enemies.ToList()) // Używamy ToList(), aby uniknąć modyfikacji kolekcji podczas iteracji
+        foreach (var enemy in enemies.ToList())
         {
-            Rect enemyRect = new Rect(Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual), enemy.Visual.Width, enemy.Visual.Height);
+            Rect enemyRect = new Rect(Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual),
+                            enemy.Visual.Width, enemy.Visual.Height);
 
             if (pociskRect.IntersectsWith(enemyRect))
             {
-                // Kolizja! Zadajemy obrażenia przeciwnikowi
-                enemy.Health--;
+                enemy.TakeDamage(damage); // Używamy pola damage zamiast stałej wartości
 
-                // Jeśli przeciwnik nie ma już żyć, usuwamy go
                 if (enemy.Health <= 0)
                 {
-                    // Jeśli przeciwnik to MageEnemy, zatrzymujemy jego strzelanie
                     if (enemy is MageEnemy mageEnemy)
-                    {
                         mageEnemy.StopShooting();
-                    }
-                    // Jeśli przeciwnik to MageEnemy, zatrzymujemy jego strzelanie
                     if (enemy is SpiderEnemy spiderEnemy)
-                    {
                         spiderEnemy.StopShooting();
-                    }
 
                     canvas.Children.Remove(enemy.Visual);
                     enemies.Remove(enemy);
                 }
 
-                // Usuwamy pocisk
-                canvas.Children.Remove(visual);
-                timer.Stop();
-
-                break; // Przerywamy pętlę, ponieważ pocisk został zniszczony
+                Destroy();
+                break;
             }
         }
     }
 
+    private void Destroy()
+    {
+        timer?.Stop();
+        if (canvas.Children.Contains(visual))
+        {
+            canvas.Children.Remove(visual);
+        }
+    }
 }

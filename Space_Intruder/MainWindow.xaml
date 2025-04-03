@@ -12,17 +12,19 @@
 
     <Grid>
         <Canvas x:Name="MyCanvas">
-            <!-- Gracz (Klocek) -->
-            <Rectangle x:Name="Klocek" Width="50" Height="50">
-                <Rectangle.Fill>
-                    <ImageBrush ImageSource="pack://application:,,,/Images/boss.png" Stretch="UniformToFill"/>
-                </Rectangle.Fill>
-            </Rectangle>
             <Canvas.Background>
                 <ImageBrush ImageSource="pack://application:,,,/Images/background.jpg" Stretch="UniformToFill"/>
             </Canvas.Background>
         </Canvas>
-        <TextBlock x:Name="current_level" Text="Level 1" FontSize="24" HorizontalAlignment="Center"/>
-        <TextBlock x:Name="current_life" Text="❤❤❤" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="30"/>
+
+        <!-- Górny panel z poziomem -->
+        <TextBlock x:Name="current_level" Text="Level 1" FontSize="24" Foreground="White" 
+                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0"/>
+
+        <!-- Dolny prawy panel z życiami -->
+        <StackPanel x:Name="LifeContainer" Orientation="Horizontal" 
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+            <!-- Serduszka będą dodawane dynamicznie w kodzie -->
+        </StackPanel>
     </Grid>
 </Window>

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Space_Intruder.GameObjects;
+using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
@@ -12,12 +14,12 @@ namespace Space_Intruder.Class
         public bool IsGameCompleted { get; private set; }
 
         private Canvas gameCanvas;
-        private Rectangle player;
+        private Hero player;
         private List<Enemy> enemies = new List<Enemy>();
 
-        public Level_Gry(Canvas canvas, Rectangle player)
+        public Level_Gry(Canvas gameCanvas, Hero player)
         {
-            this.gameCanvas = canvas;
+            this.gameCanvas = gameCanvas;
             this.player = player;
         }
 
@@ -73,12 +75,66 @@ namespace Space_Intruder.Class
             }
         }
 
+        public void ResumeAllEnemies()
+        {
+            foreach (var enemy in enemies.ToList())
+            {
+                if (enemy is MageEnemy mage) mage.StartShooting();
+                if (enemy is SpiderEnemy spider) spider.StartShooting();
+            }
+        }
+
+        public void StopAllEnemies()
+        {
+            foreach (var enemy in enemies.ToList())
+            {
+                if (enemy is MageEnemy mage) mage.StopShooting();
+                if (enemy is SpiderEnemy spider) spider.StopShooting();
+            }
+        }
+
         public bool AreAllEnemiesDefeated()
         {
             return enemies.Count == 0;
         }
 
         public List<Enemy> GetCurrentEnemies() => enemies;
+
+        public void UpdateEnemies()
+        {
+            foreach (var enemy in enemies.ToList())
+            {
+                enemy.Move();
+
+                // Check collision with edges
+                double enemyX = Canvas.GetLeft(enemy.Visual);
+                if (enemyX <= 0 || enemyX + enemy.Visual.Width >= gameCanvas.ActualWidth)
+                {
+                    enemy.Direction *= -1;
+                    double currentY = Canvas.GetBottom(enemy.Visual);
+                    Canvas.SetBottom(enemy.Visual, currentY - 20);
+                }
+
+                // Check collision with player
+                Rect enemyRect = new Rect(
+                    Canvas.GetLeft(enemy.Visual),
+                    Canvas.GetBottom(enemy.Visual),
+                    enemy.Visual.Width,
+                    enemy.Visual.Height);
+
+                Rect playerRect = new Rect(
+                    player.PositionX,
+                    player.PositionY,
+                    player.Width,
+                    player.Height);
+
+                if (enemyRect.IntersectsWith(playerRect))
+                {
+                    enemy.TakeDamage(1);
+                    player.TakeDamage();
+                }
+            }
+        }
 
         private void ClearEnemies()
         {

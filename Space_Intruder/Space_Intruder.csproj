@@ -12,8 +12,13 @@
     <None Remove="Images\background.jpg" />
     <None Remove="Images\boss.png" />
     <None Remove="Images\czarodziej.png" />
+    <None Remove="Images\heart.jpg" />
     <None Remove="Images\nietoperz.png" />
     <None Remove="Images\pajak.png" />
+    <None Remove="Video\boss.gif" />
+    <None Remove="Video\czarodziej.gif" />
+    <None Remove="Video\nietoperz.gif" />
+    <None Remove="Video\pajak.gif" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,12 +31,31 @@
     <Resource Include="Images\czarodziej.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\heart.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\nietoperz.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\pajak.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Video\boss.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Video\czarodziej.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Video\nietoperz.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Video\pajak.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
 
 </Project>

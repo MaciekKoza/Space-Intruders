@@ -1,189 +1,164 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Space_Intruder.Class;
+using Space_Intruder.GameObjects;
 
 namespace Space_Intruder
 {
     public partial class MainWindow : Window
     {
-        private double pozycjaX = 200;
+
         private bool isGameOver = false;
-        private Storyboard moveStoryboard;
-        private DoubleAnimation moveAnimation;
-        public double krok = 20;
         private Level_Gry gameLevel;
         private DispatcherTimer gameTimer;
-
-        // Statustyki Bohatera
-
-        private int life = 3;
+        private Hero player;
 
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame();
+            MyCanvas.Loaded += (sender, e) => InitializeGame();
         }
 
         private void InitializeGame()
         {
-            Canvas.SetLeft(Klocek, pozycjaX);
-            Canvas.SetBottom(Klocek, 20);
+            Debug.WriteLine($"Canvas dimensions: {MyCanvas.ActualWidth}x{MyCanvas.ActualHeight}");
 
-            // Inicjalizacja animacji ruchu
-            moveStoryboard = new Storyboard();
-            moveAnimation = new DoubleAnimation
-            {
-                Duration = TimeSpan.FromMilliseconds(200),
-                EasingFunction = new QuadraticEase()
-            };
-            Storyboard.SetTarget(moveAnimation, Klocek);
-            Storyboard.SetTargetProperty(moveAnimation, new PropertyPath("(Canvas.Left)"));
-            moveStoryboard.Children.Add(moveAnimation);
+            // Create hero
+            player = new Hero(MyCanvas, 200, 20);
 
-            // Inicjalizacja poziomów gry
-            gameLevel = new Level_Gry(MyCanvas, Klocek);
+            // Initialize game level
+            gameLevel = new Level_Gry(MyCanvas, player);
             gameLevel.LoadLevel(1);
+            Debug.WriteLine($"Level 1 loaded with {gameLevel.GetCurrentEnemies().Count} enemies");
 
-            // Uruchomienie głównej pętli gry
+            // Game loop
             gameTimer = new DispatcherTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(16);
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
-            this.Loaded += (sender, e) => gameLevel.LoadLevel(1);
+            player.LivesChanged += (sender, e) => UpdateLifeDisplay();
+
+            // Update UI - teraz używamy graficznych ikon
+            current_level.Text = $"Level {gameLevel.CurrentLevel}";
+            UpdateLifeDisplay();
+        }
+
+        private void UpdateLifeDisplay()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                LifeContainer.Children.Clear();
+
+                for (int i = 0; i < player.Lives; i++)
+                {
+                    var heart = new Image
+                    {
+                        Source = new BitmapImage(new Uri("pack://application:,,,/Images/heart.jpg")),
+                        Width = 30,
+                        Height = 30,
+                        Margin = new Thickness(5, 0, 5, 0)
+                    };
+                    LifeContainer.Children.Add(heart);
+                }
+            });
+        }
+
+        // Wywołuj tę metodę zawsze gdy zmienia się liczba żyć:
+        private void Player_OnLifeChanged(object sender, EventArgs e)
+        {
+            UpdateLifeDisplay();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            if (player.IsFrozen) return;
             if (isGameOver) return;
 
-            // Obsługa ruchu gracza
-            double newX = pozycjaX;
-
-            if (e.Key == Key.Left && pozycjaX > 0)
-            {
-                newX = pozycjaX - krok;
-            }
-            else if (e.Key == Key.Right && pozycjaX < Width - Klocek.Width - 16)
-            {
-                newX = pozycjaX + krok;
-            }
-
-            if (newX != pozycjaX)
-            {
-                moveStoryboard.Stop();
-                moveAnimation.To = newX;
-                moveStoryboard.Begin();
-                pozycjaX = newX;
-            }
-
-            // Obsługa strzału
-            if (e.Key == Key.Space)
-            {
-                ShootPlayerBullet();
-            }
-        }
-
-        private void ShootPlayerBullet()
-        {
-            double klocekX = Canvas.GetLeft(Klocek);
-            double klocekY = Canvas.GetBottom(Klocek);
-            var bullet = new Pocisk(
-                "bohater",
-                5,
-                klocekX,
-                klocekY,
-                MyCanvas,
-                gameLevel.GetCurrentEnemies(),
-                Klocek
-            );
+            if (e.Key == Key.Left) player.MoveLeft(0);
+            else if (e.Key == Key.Right) player.MoveRight(MyCanvas.ActualWidth);
+            else if (e.Key == Key.Space) player.Shoot(MyCanvas, gameLevel.GetCurrentEnemies());
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
             if (isGameOver) return;
 
-            // Sprawdzenie czy poziom został ukończony
-            if (gameLevel.AreAllEnemiesDefeated())
+            if (!isUpgradeScreenOpen) // Tylko jeśli okno ulepszeń nie jest otwarte
             {
-                if (gameLevel.IsGameCompleted)
+                gameLevel.UpdateEnemies();
+
+                if (gameLevel.AreAllEnemiesDefeated())
                 {
-                    EndGame(true); // Wygrana
-                }
-                else
-                {
-                    gameLevel.NextLevel();
-                    current_level.Text =$"Level {gameLevel.CurrentLevel.ToString()}";
+                    if (gameLevel.IsGameCompleted)
+                    {
+                        EndGame(true);
+                    }
+                    else
+                    {
+                        gameLevel.NextLevel();
+                        current_level.Text = $"Level {gameLevel.CurrentLevel}";
+                        ShowUpgradeScreen(); // Wywołanie metody pokazującej okno ulepszeń
+                        UpdateLifeDisplay();
+                    }
                 }
             }
+        }
 
-            // Aktualizacja przeciwników
-            foreach (var enemy in gameLevel.GetCurrentEnemies())
+        private bool isUpgradeScreenOpen = false;
+
+        private void ShowUpgradeScreen()
+        {
+            isUpgradeScreenOpen = true;
+            gameTimer.Stop();
+            gameLevel.StopAllEnemies();
+            player.IsFrozen = true;
+
+            var upgradeScreen = new UpgradeScreen(player);
+            upgradeScreen.Closed += (s, args) =>
             {
-                enemy.Move();
+                isUpgradeScreenOpen = false;
+                player.IsFrozen = false;
+                gameLevel.ResumeAllEnemies();
+                gameTimer.Start();
 
-                // Sprawdzenie kolizji z krawędziami
-                double enemyX = Canvas.GetLeft(enemy.Visual);
-                if (enemyX <= 0 || enemyX + enemy.Visual.Width >= MyCanvas.ActualWidth)
-                {
-                    enemy.Direction *= -1;
-                    double currentY = Canvas.GetBottom(enemy.Visual);
-                    Canvas.SetBottom(enemy.Visual, currentY - 10);
-                }
-            }
+                // Dodaj tę linię, aby wymusić odświeżenie wyświetlania żyć
+                UpdateLifeDisplay();
+            };
+            upgradeScreen.Show();
         }
 
         private void EndGame(bool isWin)
         {
             isGameOver = true;
-            gameTimer.Stop();
+            gameTimer?.Stop();
+            gameLevel?.StopAllEnemies();
+            MessageBox.Show(isWin ? "Congratulations! You won!" : "Game Over!");
+        }
 
-            foreach (var enemy in gameLevel.GetCurrentEnemies())
-            {
-                if (enemy is MageEnemy mage) mage.StopShooting();
-                if (enemy is SpiderEnemy spider) spider.StopShooting();
-            }
-
-            MessageBox.Show(isWin ? "Gratulacje! Wygrałeś grę!" : "Przegrałeś! Koniec gry.");
+        public void StopGame()
+        {
+            gameTimer?.Stop();
+            gameLevel?.StopAllEnemies();
         }
 
         public void SlowDownPlayer()
         {
-            double slowSpeed = 0;
-            double normalSpeed = 20;
-
-            krok = slowSpeed;
-
-            var restoreSpeedTimer = new DispatcherTimer();
-            restoreSpeedTimer.Interval = TimeSpan.FromSeconds(2);
-            restoreSpeedTimer.Tick += (s, e) =>
-            {
-                krok = normalSpeed;
-                restoreSpeedTimer.Stop();
-            };
-            restoreSpeedTimer.Start();
+            player.ApplySlowEffect(0.5, 2.0);
         }
 
         public void PlayerHit()
         {
-            life--;
+            player.TakeDamage();
             UpdateLifeDisplay();
-
-            if (life <= 0)
-            {
-                EndGame(false); // Game over
-            }
-        }
-
-        private void UpdateLifeDisplay()
-        {
-            if(life >= 0) { current_life.Text = new string('❤', life); }
+            if (!player.IsAlive) EndGame(false);
         }
     }
 }
