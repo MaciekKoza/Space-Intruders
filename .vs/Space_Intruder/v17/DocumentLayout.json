@@ -1,0 +1,84 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space_intruders_group\\space_intruder\\upgradescreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\upgradescreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space_intruders_group\\space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space_intruders_group\\space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space_intruders_group\\space_intruder\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Hero.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\Class\\Hero.cs",
+              "RelativeDocumentMoniker": "Space_Intruder\\Class\\Hero.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\Class\\Hero.cs",
+              "RelativeToolTip": "Space_Intruder\\Class\\Hero.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAA1wBcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T14:14:25.993Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Space_Intruder\\MainWindow.xaml",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\MainWindow.xaml",
+              "RelativeToolTip": "Space_Intruder\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-04-03T14:01:55.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UpgradeScreen.xaml.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\UpgradeScreen.xaml.cs",
+              "RelativeDocumentMoniker": "Space_Intruder\\UpgradeScreen.xaml.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\UpgradeScreen.xaml.cs",
+              "RelativeToolTip": "Space_Intruder\\UpgradeScreen.xaml.cs",
+              "ViewState": "AQIAAE8AAAAAAAAAAAAAAFUAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T13:12:41.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Space_Intruder\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Space_Intruder\\MainWindow.xaml.cs",
+              "ViewState": "AQIAADAAAAAAAAAAAAAUwD0AAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T09:57:40.922Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
