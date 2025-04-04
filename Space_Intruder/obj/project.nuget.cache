@@ -6,5 +6,12 @@
   "expectedPackageFiles": [
     "D:\\Users\\Michał\\.nuget\\packages\\wpfanimatedgif\\2.0.2\\wpfanimatedgif.2.0.2.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Wystąpił problem podczas czytania pliku pamięci podręcznej D:\\Users\\Michał\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

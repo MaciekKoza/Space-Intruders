@@ -119,6 +119,8 @@ D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows
 D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\WpfAnimatedGif.dll
 D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.csproj.AssemblyReference.cache
 D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_In.B52B4496.Up2Date
+<<<<<<< HEAD
+=======
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\bin\Debug\net8.0-windows\Space_Intruder.exe
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\bin\Debug\net8.0-windows\Video\boss.gif
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\bin\Debug\net8.0-windows\Video\czarodziej.gif
@@ -151,3 +153,4 @@ D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\obj\Debug\net8
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.pdb
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder.genruntimeconfig.cache
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\obj\Debug\net8.0-windows\ref\Space_Intruder.dll
+>>>>>>> bbfb1c2c09d3a727d8075a4643ea0dcf06ff67d8
