@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Space_Intruder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee2edd82e1bb6cb6839ce2922ec408a4bf78a480")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe7b9a1d80e0b4d236e222f79122f28c90efff66")]
->>>>>>> bbfb1c2c09d3a727d8075a4643ea0dcf06ff67d8
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8713d6339bd79b5db9237c6b042b0fa394f89057")]
 [assembly: System.Reflection.AssemblyProductAttribute("Space_Intruder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Space_Intruder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
