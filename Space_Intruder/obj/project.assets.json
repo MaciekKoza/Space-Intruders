@@ -54,19 +54,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
-      "projectUniqueName": "D:\\Users\\Michał\\Desktop\\Space-Intruders\\Space_Intruder\\Space_Intruder.csproj",
-      "projectName": "Space_Intruder",
-      "projectPath": "D:\\Users\\Michał\\Desktop\\Space-Intruders\\Space_Intruder\\Space_Intruder.csproj",
-      "packagesPath": "D:\\Users\\Michał\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Michał\\Desktop\\Space-Intruders\\Space_Intruder\\obj\\",
-=======
       "projectUniqueName": "D:\\Users\\Michał\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\Space_Intruder.csproj",
       "projectName": "Space_Intruder",
       "projectPath": "D:\\Users\\Michał\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\Space_Intruder.csproj",
       "packagesPath": "D:\\Users\\Michał\\.nuget\\packages\\",
       "outputPath": "D:\\Users\\Michał\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\obj\\",
->>>>>>> bbfb1c2c09d3a727d8075a4643ea0dcf06ff67d8
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -132,5 +124,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Wystąpił problem podczas czytania pliku pamięci podręcznej D:\\Users\\Michał\\Desktop\\ttt\\Space_Intruders_Group\\Space_Intruder\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
