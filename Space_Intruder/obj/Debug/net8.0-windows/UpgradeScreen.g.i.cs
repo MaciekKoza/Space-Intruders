@@ -108,7 +108,7 @@ namespace Space_Intruder {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Space_Intruder;component/upgradescreen.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Space_Intruder;V1.0.0.0;component/upgradescreen.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\UpgradeScreen.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
