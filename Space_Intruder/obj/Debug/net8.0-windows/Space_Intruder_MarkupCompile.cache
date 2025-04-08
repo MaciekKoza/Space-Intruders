@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\App.xaml
-21235067955
-4410633697
-9727776401
+3-1321873111
+5-337740130
+11568177977
 199307455652
-MainWindow.xaml;UpgradeScreen.xaml;
+MainWindow.xaml;StartWindow.xaml;UpgradeScreen.xaml;
 
-False
+True
 

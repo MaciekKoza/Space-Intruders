@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using Space_Intruder;
+using System;
+using System.Windows.Media.TextFormatting;
 
 public class Pocisk
 {
@@ -14,14 +16,16 @@ public class Pocisk
     private List<Enemy> enemies; // Lista przeciwników
     private DispatcherTimer timer; // Timer do aktualizacji pozycji pocisku
     private int direction; // Kierunek pocisku: 1 = w górę, -1 = w dół
-    private Rectangle player; // Gracz (Klocek)
+    private Image player; // Gracz (Klocek)
     private string postac;
     private Brush color = Brushes.White;
     private bool isSpiderShot;
     private int damage; // Nowe pole - obrażenia pocisku
+    private Random random;
 
     public Pocisk(string postac, int damage, double speed, double startX, double startY,
-                 Canvas canvas, List<Enemy> enemies, Rectangle player, int direction = 1)
+             Canvas canvas, List<Enemy> enemies, Image player, int direction = 1,
+             double width = 5, double height = 15)
     {
         this.speed = speed;
         this.canvas = canvas;
@@ -29,8 +33,10 @@ public class Pocisk
         this.direction = direction;
         this.player = player;
         this.postac = postac;
-        this.damage = damage; // Inicjalizacja obrażeń
+        this.damage = damage;
         this.isSpiderShot = postac == "spider";
+
+        this.random = new Random();
 
         switch (postac)
         {
@@ -43,18 +49,19 @@ public class Pocisk
             case "spider":
                 color = Brushes.White;
                 break;
-            default:
+            case "boss":
+                color = Brushes.Red;
                 break;
-        };
+        }
 
         visual = new Rectangle
         {
-            Width = 5,
-            Height = 15,
+            Width = width,
+            Height = height,
             Fill = color
         };
 
-        Canvas.SetLeft(visual, startX);
+        Canvas.SetLeft(visual, startX - width / 2);
         Canvas.SetBottom(visual, startY);
         canvas.Children.Add(visual);
 
@@ -125,6 +132,13 @@ public class Pocisk
 
                     canvas.Children.Remove(enemy.Visual);
                     enemies.Remove(enemy);
+
+                    if (random.Next(0,10) < 3) // 20% szansy na drop
+                    {
+                        BoostType type = (BoostType)random.Next(0, 3);
+                        var boost = new Boost(canvas, Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual), type);
+                        canvas.Children.Add(boost.Visual);
+                    }
                 }
 
                 Destroy();

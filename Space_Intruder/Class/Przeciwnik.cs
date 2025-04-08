@@ -1,6 +1,7 @@
 ﻿using Space_Intruder.GameObjects;
 using System;
 using System.IO;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,9 +19,9 @@ namespace Space_Intruder.Class
         public double Speed { get; protected set; } = 2;
         public int Direction { get; set; } = 1;
         public int Health { get; set; }
-        public int BaseHealth { get; protected set; } = 1;
-        public double BaseSpeed { get; protected set; } = 2;
-        public double BaseAttackRate { get; protected set; } = 1.0;
+        public int BaseHealth { get; set; } = 1;
+        public double BaseSpeed { get; set; } = 2;
+        public double BaseAttackRate { get; set; } = 1.0;
         public event Action<Enemy> OnEnemyDied;
 
         protected int currentLevel = 1;
@@ -178,7 +179,7 @@ namespace Space_Intruder.Class
             Shoot();
         }
 
-        public void Shoot()
+        protected virtual void Shoot()
         {
             double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
             double startY = Canvas.GetBottom(this.Visual);
@@ -252,4 +253,76 @@ namespace Space_Intruder.Class
             }
         }
     }
+
+    public class BossEnemy : TankEnemy
+    {
+        private Canvas canvas;
+        private DispatcherTimer shootTimer;
+        private Hero player;
+
+        public BossEnemy(double x, double y, Canvas canvas, Hero player, int level)
+            : base(x, y, level)
+        {
+            this.canvas = canvas;
+            this.player = player;
+            BaseHealth = 30;
+            BaseSpeed = 1.2;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+
+            Visual.Width = 100;
+            Visual.Height = 100;
+
+            shootTimer = new DispatcherTimer();
+            shootTimer.Interval = TimeSpan.FromSeconds(4.0); // Strzela rzadziej, ale mocniej
+            shootTimer.Tick += ShootTimer_Tick;
+            shootTimer.Start();
+        }
+
+        private void ShootTimer_Tick(object sender, EventArgs e)
+        {
+            Shoot();
+        }
+
+        private void Shoot()
+        {
+            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
+            double startY = Canvas.GetBottom(this.Visual);
+            Pocisk pocisk = new Pocisk("boss", 3, 6, startX, startY, canvas, new List<Enemy>(), player.Visual, -1, 20, 50); // ogromny pocisk
+        }
+
+        public void StopShooting()
+        {
+            shootTimer?.Stop();
+        }
+    }
+
+    public class HeavyMageEnemy : MageEnemy
+    {
+        private Canvas canvas;
+        private Hero player;  // Changed from UIElement to Hero
+
+        public HeavyMageEnemy(double x, double y, Canvas canvas, Hero player, int level)
+            : base(x, y, canvas, player, level)
+        {
+            this.canvas = canvas;
+            this.player = player;
+            BaseHealth = 6;
+            BaseAttackRate = 2.0;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+
+            Visual.Width = 60;
+            Visual.Height = 60;
+        }
+
+        public void Shoot()
+        {
+            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
+            double startY = Canvas.GetBottom(this.Visual);
+            Pocisk pocisk = new Pocisk("mag", 2, 5 + (currentLevel * 0.5), startX, startY,canvas, new List<Enemy>(), player.Visual, -1, 10, 30);
+        }
+    }
+
+
 }

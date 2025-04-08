@@ -40,6 +40,9 @@
     <Resource Include="Images\pajak.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Video\Hero.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Video\boss.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

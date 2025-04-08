@@ -1,4 +1,6 @@
 ﻿using Space_Intruder.Class;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -6,12 +8,13 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using WpfAnimatedGif;
 
 namespace Space_Intruder.GameObjects
 {
     public class Hero
     {
-        public Rectangle Visual { get; private set; }
+        public Image Visual { get; private set; }  // Changed from Rectangle to Image
 
         public UIElement PlayerVisual => Visual;
         public double PositionX { get; private set; }
@@ -21,7 +24,6 @@ namespace Space_Intruder.GameObjects
         public event EventHandler LivesChanged;
 
         private int _lives = 3;
-
         private int _maxLives = 5;
         public int MaxLives
         {
@@ -42,6 +44,9 @@ namespace Space_Intruder.GameObjects
 
         public bool IsFrozen { get; set; }
 
+        public bool IsShielded { get; set; } = false;
+        public bool IsTripleShot { get; set; } = false;
+
 
         // Stats
         public double _movementSpeed = 25;
@@ -56,12 +61,13 @@ namespace Space_Intruder.GameObjects
 
         public Hero(Canvas gameCanvas, double initialX, double initialY)
         {
-            Visual = new Rectangle
+            Visual = new Image
             {
                 Width = 50,
                 Height = 50,
-                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/boss.png")))
+                Stretch = Stretch.Fill
             };
+            LoadAnimatedGif("Video/Hero.gif");  // Assuming you have a hero.gif in your Video folder
 
             PositionX = initialX;
             PositionY = initialY;
@@ -86,6 +92,22 @@ namespace Space_Intruder.GameObjects
             _attackTimer = new DispatcherTimer();
             _attackTimer.Interval = TimeSpan.FromSeconds(1 / _attackSpeed);
             _attackTimer.Tick += (s, e) => _canAttack = true;
+        }
+
+        private void LoadAnimatedGif(string path)
+        {
+            try
+            {
+                var imageUri = new Uri(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path));
+                var imageSource = new BitmapImage(imageUri);
+                ImageBehavior.SetAnimatedSource(Visual, imageSource);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading hero GIF: {ex.Message}");
+                // Fallback to a solid color if GIF fails to load
+                Visual.Source = new BitmapImage(new Uri("pack://application:,,,/Images/boss.png"));
+            }
         }
 
         public void MoveLeft(double gameAreaLeft)
@@ -127,7 +149,8 @@ namespace Space_Intruder.GameObjects
                 bulletY,
                 gameCanvas,
                 enemies,
-                Visual
+                Visual,  // Now passing an Image which is what the constructor expects
+                1        // Direction (1 for player bullets)
             );
 
             _canAttack = false;
@@ -136,6 +159,8 @@ namespace Space_Intruder.GameObjects
 
         public void TakeDamage()
         {
+            if (IsShielded) return;
+
             Lives--;
             if (!IsAlive)
             {
@@ -177,6 +202,5 @@ namespace Space_Intruder.GameObjects
                     break;
             }
         }
-
     }
 }

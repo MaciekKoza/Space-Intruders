@@ -10,6 +10,7 @@ namespace Space_Intruder.Class
     public class Level_Gry
     {
         public int CurrentLevel { get; private set; } = 1;
+
         public int TotalLevels { get; } = 9;
         public bool IsGameCompleted { get; private set; }
 
@@ -17,10 +18,15 @@ namespace Space_Intruder.Class
         private Hero player;
         private List<Enemy> enemies = new List<Enemy>();
 
+        public static Level_Gry Instance { get; private set; }
+
+
         public Level_Gry(Canvas gameCanvas, Hero player)
         {
             this.gameCanvas = gameCanvas;
             this.player = player;
+
+            Instance = this;
         }
 
         public void LoadLevel(int level)
@@ -28,7 +34,7 @@ namespace Space_Intruder.Class
             ClearEnemies();
             CurrentLevel = level;
 
-            switch (level)
+            switch (CurrentLevel)
             {
                 case 1:
                     CreateLevel1();
@@ -155,7 +161,7 @@ namespace Space_Intruder.Class
                 for (int col = 0; col < cols; col++)
                 {
                     double x = startX + col * spacingX;
-                    double y = startY - row * spacingY;
+                    double y = gameCanvas.ActualHeight - startY - row * spacingY;
                     var enemy = enemyCreator(row, x, y);
                     enemies.Add(enemy);
                     gameCanvas.Children.Add(enemy.Visual);
@@ -165,70 +171,180 @@ namespace Space_Intruder.Class
 
         private void CreateLevel1()
         {
-            CreateEnemyPattern(2, 5, 80, 60, 50, gameCanvas.ActualHeight - 100,
-                (row, x, y) => new BasicEnemy(x, y, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(2, 5, 80, 60, 50, startY,
+                (row, x, y) => new BasicEnemy(x, y, CurrentLevel)
+                {
+                    BaseSpeed = 2.5,
+                    BaseAttackRate = 1.2
+                });
         }
 
         private void CreateLevel2()
         {
-            CreateEnemyPattern(3, 4, 90, 70, 60, gameCanvas.ActualHeight - 100,
-                (row, x, y) => new BasicEnemy(x, y, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(3, 4, 90, 70, 60, startY,
+                (row, x, y) => new BasicEnemy(x, y, CurrentLevel)
+                {
+                    BaseHealth = row + 1,
+                    BaseSpeed = 2.5 + (row * 0.2),
+                    BaseAttackRate = 1.0 + (row * 0.1)
+                });
         }
 
         private void CreateLevel3()
         {
-            CreateEnemyPattern(2, 6, 70, 60, 40, gameCanvas.ActualHeight - 100,
-                (row, x, y) => row < 1 ? new BasicEnemy(x, y, CurrentLevel) :
-                                       new MageEnemy(x, y, gameCanvas, player, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(2, 6, 70, 60, 40, startY,
+                (row, x, y) => row < 1 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseSpeed = 2.8,
+                        BaseAttackRate = 1.3
+                    } :
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 1.5
+                    });
         }
 
         private void CreateLevel4()
         {
-            CreateEnemyPattern(3, 5, 80, 65, 50, gameCanvas.ActualHeight - 100,
-                (row, x, y) => row == 0 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row == 1 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          new TankEnemy(x, y, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(3, 5, 80, 65, 50, startY,
+                (row, x, y) => row == 0 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseSpeed = 3.0
+                    } :
+                    row == 1 ?
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 1.8
+                    } :
+                    new TankEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = 5,
+                        BaseSpeed = 2.0
+                    });
         }
 
         private void CreateLevel5()
         {
-            CreateEnemyPattern(4, 6, 75, 60, 40, gameCanvas.ActualHeight - 100,
-                (row, x, y) => row < 2 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row == 2 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          new TankEnemy(x, y, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(4, 6, 75, 60, 40, startY,
+                (row, x, y) => row < 2 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = row + 2,
+                        BaseSpeed = 3.2
+                    } :
+                    row == 2 ?
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 2.0
+                    } :
+                    new TankEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = 6,
+                        BaseSpeed = 2.2
+                    });
         }
 
         private void CreateLevel6()
         {
-            CreateEnemyPattern(3, 7, 70, 65, 30, gameCanvas.ActualHeight - 100,
-                (row, x, y) => row == 0 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row == 1 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(3, 7, 70, 65, 30, startY,
+                (row, x, y) => row == 0 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseSpeed = 3.5
+                    } :
+                    row == 1 ?
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 2.2
+                    } :
+                    new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 3.0,
+                        BaseSpeed = 3.0
+                    });
         }
 
         private void CreateLevel7()
         {
-            CreateEnemyPattern(4, 6, 80, 70, 40, gameCanvas.ActualHeight - 120,
-                (row, x, y) => row < 1 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row < 3 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          new TankEnemy(x, y, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(4, 6, 80, 70, 40, startY,
+                (row, x, y) => row < 1 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = 3,
+                        BaseSpeed = 3.7
+                    } :
+                    row < 3 ?
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 2.5
+                    } :
+                    new TankEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = 8,
+                        BaseSpeed = 2.5
+                    });
         }
 
         private void CreateLevel8()
         {
-            CreateEnemyPattern(5, 5, 85, 60, 50, gameCanvas.ActualHeight - 150,
-                (row, x, y) => row < 2 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row < 4 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel));
+            double startY = 60; // 50px od góry + miejsce dla 2 rzędów
+            CreateEnemyPattern(5, 5, 85, 60, 50, startY,
+                (row, x, y) => row < 2 ?
+                    new BasicEnemy(x, y, CurrentLevel)
+                    {
+                        BaseHealth = 4,
+                        BaseSpeed = 4.0
+                    } :
+                    row < 4 ?
+                    new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 2.8
+                    } :
+                    new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel)
+                    {
+                        BaseAttackRate = 3.5,
+                        BaseSpeed = 3.5
+                    });
         }
 
         private void CreateLevel9()
         {
-            CreateEnemyPattern(6, 6, 70, 55, 30, gameCanvas.ActualHeight - 180,
-                (row, x, y) => row < 1 ? new BasicEnemy(x, y, CurrentLevel) :
-                          row < 3 ? new MageEnemy(x, y, gameCanvas, player, CurrentLevel) :
-                          row < 5 ? new TankEnemy(x, y, CurrentLevel) :
-                          new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel));
+            double bossY = gameCanvas.ActualHeight - 200;
+            double spacingX = 90;
+            double spacingY = 55;
+            double startX = 30;
+
+            // Elitarni magowie – 1 rząd pod bossem
+            double eliteStartY = 80; // Pod bossem, z odstępem
+            CreateEnemyPattern(1, 6, spacingX, spacingY, startX, eliteStartY,
+                (row, x, y) => new MageEnemy(x, y, gameCanvas, player, CurrentLevel)
+                {
+                    BaseHealth = 20,
+                    BaseAttackRate = 1.0, // 2x szybciej (domyślnie 2.0 lub 3.0)
+                    Visual = { Width = 80, Height = 80 } // Więksi
+                });
+
+            // Boss
+            var boss = new TankEnemy(gameCanvas.ActualWidth / 2 - 60, bossY, CurrentLevel * 3)
+            {
+                BaseHealth = 200,
+                BaseSpeed = 1.2,
+                Visual = { Width = 160, Height = 160 }
+            };
+
+
+            enemies.Add(boss);
+            gameCanvas.Children.Add(boss.Visual);
         }
+
     }
 }

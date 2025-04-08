@@ -21,6 +21,14 @@ namespace Space_Intruder
             _player = player;
             UpdateUpgradePointsDisplay();
 
+            // Sprawdź maksymalną liczbę żyć na starcie
+            if (_player.Lives >= _player.MaxLives)
+            {
+                HealthUpgradeBtn.IsEnabled = false;
+                HealthUpgradeBtn.Content = "MAX ŻYĆ OSIĄGNIĘTY";
+                HealthUpgradeBtn.Background = Brushes.LightGray;
+            }
+
             // Animacja pojawiania się
             this.Opacity = 0;
             var fadeIn = new DoubleAnimation(1, TimeSpan.FromSeconds(0.3));
@@ -101,11 +109,37 @@ namespace Space_Intruder
 
         private void HealthUpgrade_Click(object sender, RoutedEventArgs e)
         {
+            // Sprawdź czy gracz ma już maksymalną liczbę żyć
+            if (_player.Lives >= _player.MaxLives)
+            {
+                // Wyłącz przycisk i pokaż komunikat
+                HealthUpgradeBtn.IsEnabled = false;
+                HealthUpgradeBtn.Content = "MAX ŻYĆ OSIĄGNIĘTY";
+                HealthUpgradeBtn.Background = Brushes.LightGray;
+
+                // Możesz dodać animację informującą o maksymalnej liczbie żyć
+                var flashAnimation = new ColorAnimation(Colors.Red, Colors.LightGray,
+                    TimeSpan.FromMilliseconds(300));
+                var brush = new SolidColorBrush(Colors.LightGray);
+                HealthUpgradeBtn.Background = brush;
+                brush.BeginAnimation(SolidColorBrush.ColorProperty, flashAnimation);
+
+                return;
+            }
+
+            // Normalna procedura ulepszania jeśli nie ma maksa żyć
             if (_remainingUpgrades > 0)
             {
-                _player.Lives++; // Najpierw zwiększ życia
-                UpgradeStat("health", 1); // Potem zarejestruj ulepszenie
+                UpgradeStat("health", 1);
                 AnimateButton(HealthUpgradeBtn);
+
+                // Dodatkowe sprawdzenie po ulepszeniu
+                if (_player.Lives >= _player.MaxLives)
+                {
+                    HealthUpgradeBtn.IsEnabled = false;
+                    HealthUpgradeBtn.Content = "MAX ŻYĆ OSIĄGNIĘTY";
+                    HealthUpgradeBtn.Background = Brushes.LightGray;
+                }
             }
         }
 

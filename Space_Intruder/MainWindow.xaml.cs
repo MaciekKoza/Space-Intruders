@@ -19,6 +19,7 @@ namespace Space_Intruder
         private Level_Gry gameLevel;
         private DispatcherTimer gameTimer;
         private Hero player;
+        private List<Boost> activeBoosts = new List<Boost>();
 
         public MainWindow()
         {
@@ -110,6 +111,15 @@ namespace Space_Intruder
                     }
                 }
             }
+
+            for (int i = activeBoosts.Count - 1; i >= 0; i--)
+            {
+                if (activeBoosts[i].UpdatePosition(player)) // boost został zebrany lub spadł
+                {
+                    activeBoosts.RemoveAt(i);
+                }
+            }
+
         }
 
         private bool isUpgradeScreenOpen = false;

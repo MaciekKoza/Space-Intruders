@@ -165,3 +165,6 @@ C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\U
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_Intruder_Content.g.cs
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\App.baml
 C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\Space_In.B52B4496.Up2Date
+C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\Video\Hero.gif
+C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\StartWindow.g.cs
+C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\StartWindow.baml
