@@ -4,12 +4,20 @@
 winexe
 C#
 .cs
+<<<<<<< HEAD
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\
+=======
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\obj\Debug\net8.0-windows\
+>>>>>>> bbfb1c2c09d3a727d8075a4643ea0dcf06ff67d8
 Space_Intruder
 none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
+<<<<<<< HEAD
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\App.xaml
+=======
 D:\Users\Michał\Desktop\ttt\Space_Intruders_Group\Space_Intruder\App.xaml
+>>>>>>> bbfb1c2c09d3a727d8075a4643ea0dcf06ff67d8
 21235067955
 4410633697
 11-1773195272
