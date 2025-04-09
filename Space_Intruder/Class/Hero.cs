@@ -149,13 +149,15 @@ namespace Space_Intruder.GameObjects
                 bulletY,
                 gameCanvas,
                 enemies,
-                Visual,  // Now passing an Image which is what the constructor expects
-                1        // Direction (1 for player bullets)
+                this,  // ✅ przekazanie obiektu Hero
+                App.Current.MainWindow as Level_Gry,  // ✅ przekazanie Level_Gry
+                1
             );
 
             _canAttack = false;
             _attackTimer.Start();
         }
+
 
         public void TakeDamage()
         {

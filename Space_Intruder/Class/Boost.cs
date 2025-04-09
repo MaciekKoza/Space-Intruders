@@ -26,7 +26,7 @@ namespace Space_Intruder.Class
         private Hero hero;
         private Level_Gry level;
 
-        public Boost(Canvas canvas, double x, double y, BoostType type, Hero hero, Level_Gry level)
+        public Boost(Canvas canvas, double x, double y, BoostType type, Hero hero)
         {
             this.canvas = canvas;
             this.X = x;
