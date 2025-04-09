@@ -19,6 +19,7 @@ namespace Space_Intruder
         private Level_Gry gameLevel;
         private DispatcherTimer gameTimer;
         private Hero player;
+        private List<Boost> activeBoosts = new List<Boost>();
 
         public MainWindow()
         {
@@ -26,29 +27,36 @@ namespace Space_Intruder
             MyCanvas.Loaded += (sender, e) => InitializeGame();
         }
 
+        public void SetPlayer(Hero player)
+        {
+            this.player = player;
+        }
+
+
         private void InitializeGame()
         {
-            Debug.WriteLine($"Canvas dimensions: {MyCanvas.ActualWidth}x{MyCanvas.ActualHeight}");
+            // 1. Stwórz Level_Gry bez gracza (tymczasowo null)
+            gameLevel = new Level_Gry(MyCanvas, null);
 
-            // Create hero
-            player = new Hero(MyCanvas, 200, 20);
+            // 2. Stwórz gracza z referencją do gameLevel
+            player = new Hero(MyCanvas, 200, 20, gameLevel);
 
-            // Initialize game level
-            gameLevel = new Level_Gry(MyCanvas, player);
+            // 3. Ustaw gracza w Level_Gry
+            gameLevel.SetPlayer(player);
+
+            // 4. Wczytaj poziom
             gameLevel.LoadLevel(1);
-            Debug.WriteLine($"Level 1 loaded with {gameLevel.GetCurrentEnemies().Count} enemies");
 
-            // Game loop
+            // Reszta bez zmian
             gameTimer = new DispatcherTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(16);
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
             player.LivesChanged += (sender, e) => UpdateLifeDisplay();
-
-            // Update UI - teraz używamy graficznych ikon
             current_level.Text = $"Level {gameLevel.CurrentLevel}";
             UpdateLifeDisplay();
+
         }
 
         private void UpdateLifeDisplay()
@@ -110,6 +118,15 @@ namespace Space_Intruder
                     }
                 }
             }
+
+            for (int i = activeBoosts.Count - 1; i >= 0; i--)
+            {
+                if (activeBoosts[i].UpdatePosition(player)) // boost został zebrany lub spadł
+                {
+                    activeBoosts.RemoveAt(i);
+                }
+            }
+
         }
 
         private bool isUpgradeScreenOpen = false;

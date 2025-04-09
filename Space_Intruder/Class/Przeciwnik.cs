@@ -1,5 +1,6 @@
 ﻿using Space_Intruder.GameObjects;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,18 +14,21 @@ namespace Space_Intruder.Class
 {
     public abstract class Enemy
     {
-        public Image Visual { get; protected set; } // Używamy Image zamiast MediaElement
+        public Image Visual { get; protected set; }
         public EnemyType Type { get; protected set; }
         public double Speed { get; protected set; } = 2;
         public int Direction { get; set; } = 1;
         public int Health { get; set; }
-        public int BaseHealth { get; protected set; } = 1;
-        public double BaseSpeed { get; protected set; } = 2;
-        public double BaseAttackRate { get; protected set; } = 1.0;
+        public int BaseHealth { get; set; } = 1;
+        public double BaseSpeed { get; set; } = 2;
+        public double BaseAttackRate { get; set; } = 1.0;
         public event Action<Enemy> OnEnemyDied;
 
         protected int currentLevel = 1;
         private ScaleTransform _flipTransform;
+        protected DispatcherTimer movementTimer; // Dodano timer ruchu
+
+        public bool IsFrozen { get; set; }
 
         public Enemy(double x, double y, EnemyType type, int health, int level)
         {
@@ -48,6 +52,12 @@ namespace Space_Intruder.Class
 
             Canvas.SetLeft(Visual, x);
             Canvas.SetBottom(Visual, y);
+
+            // Inicjalizacja timera ruchu
+            movementTimer = new DispatcherTimer();
+            movementTimer.Interval = TimeSpan.FromMilliseconds(16);
+            movementTimer.Tick += (s, e) => Move();
+            movementTimer.Start();
         }
 
         private void LoadAnimatedGif(string path)
@@ -61,14 +71,19 @@ namespace Space_Intruder.Class
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading GIF: {ex.Message}");
+                // Fallback to static image
+                Visual.Source = new BitmapImage(new Uri("pack://application:,,,/Images/default_enemy.png"));
             }
         }
 
-        public void Move()
+        public virtual void Move()
         {
+            if (IsFrozen) return;
+
             double newX = Canvas.GetLeft(Visual) + Speed * Direction;
             Canvas.SetLeft(Visual, newX);
 
+            // Odwrócenie kierunku wizualnego
             if ((Direction > 0 && _flipTransform.ScaleX < 0) ||
                 (Direction < 0 && _flipTransform.ScaleX > 0))
             {
@@ -114,6 +129,19 @@ namespace Space_Intruder.Class
         {
             return Math.Max(0.1, baseRate * Math.Pow(0.9, level));
         }
+
+        public void StopMovement()
+        {
+            movementTimer?.Stop();
+        }
+
+        public void ResumeMovement()
+        {
+            if (movementTimer != null && !movementTimer.IsEnabled)
+            {
+                movementTimer.Start();
+            }
+        }
     }
 
     public enum EnemyType
@@ -121,8 +149,11 @@ namespace Space_Intruder.Class
         Basic,
         Mage,
         Tank,
-        Spider
+        Spider,
+        Boss,
+        HeavyMage
     }
+
     public class BasicEnemy : Enemy
     {
         public BasicEnemy(double x, double y, int level)
@@ -149,14 +180,16 @@ namespace Space_Intruder.Class
 
     public class MageEnemy : Enemy
     {
-        private Canvas canvas;
-        private DispatcherTimer shootTimer;
-        private Hero player;  // Changed from UIElement to Hero
-        private double attackRate;
+        protected Canvas canvas;
+        protected DispatcherTimer shootTimer;
+        protected Hero player;
+        protected double attackRate;
+        protected Level_Gry level_g;
 
-        public MageEnemy(double x, double y, Canvas canvas, Hero player, int level)
+        public MageEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
             : base(x, y, EnemyType.Mage, 1, level)
         {
+            this.level_g = level_g;
             this.canvas = canvas;
             this.player = player;
             BaseHealth = 1;
@@ -167,22 +200,27 @@ namespace Space_Intruder.Class
             Speed = CalculateScaledSpeed(BaseSpeed, level);
             attackRate = CalculateScaledAttackRate(BaseAttackRate, level);
 
+            InitializeShooting();
+        }
+
+        protected virtual void InitializeShooting()
+        {
             shootTimer = new DispatcherTimer();
             shootTimer.Interval = TimeSpan.FromSeconds(attackRate);
             shootTimer.Tick += ShootTimer_Tick;
             shootTimer.Start();
         }
 
-        private void ShootTimer_Tick(object sender, EventArgs e)
+        protected virtual void ShootTimer_Tick(object sender, EventArgs e)
         {
-            Shoot();
+            if (!IsFrozen) Shoot();
         }
 
-        public void Shoot()
+        protected virtual void Shoot()
         {
-            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
-            double startY = Canvas.GetBottom(this.Visual);
-            Pocisk pocisk = new Pocisk("mag", 1, 5 + (currentLevel * 0.5), startX, startY,canvas, new List<Enemy>(), player.Visual, -1);
+            double startX = Canvas.GetLeft(Visual) + Visual.Width / 2;
+            double startY = Canvas.GetBottom(Visual);
+            new Pocisk("mag", 1, 5 + (currentLevel * 0.5), startX, startY, canvas, new List<Enemy>(), player, level_g, -1);
         }
 
         public void StopShooting()
@@ -198,18 +236,26 @@ namespace Space_Intruder.Class
                 shootTimer.Start();
             }
         }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+            if (Health <= 0) StopShooting();
+        }
     }
 
     public class SpiderEnemy : Enemy
     {
         private Canvas canvas;
         private DispatcherTimer shootTimer;
-        private Hero player;  // Changed from UIElement to Hero
+        private Hero player;
         private double attackRate;
+        private Level_Gry level_g;
 
-        public SpiderEnemy(double x, double y, Canvas canvas, Hero player, int level)
+        public SpiderEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
             : base(x, y, EnemyType.Spider, 1, level)
         {
+            this.level_g = level_g;
             this.canvas = canvas;
             this.player = player;
             BaseHealth = 1;
@@ -220,6 +266,11 @@ namespace Space_Intruder.Class
             Speed = CalculateScaledSpeed(BaseSpeed, level);
             attackRate = CalculateScaledAttackRate(BaseAttackRate, level);
 
+            InitializeShooting();
+        }
+
+        private void InitializeShooting()
+        {
             shootTimer = new DispatcherTimer();
             shootTimer.Interval = TimeSpan.FromSeconds(attackRate);
             shootTimer.Tick += ShootTimer_Tick;
@@ -228,14 +279,14 @@ namespace Space_Intruder.Class
 
         private void ShootTimer_Tick(object sender, EventArgs e)
         {
-            Shoot();
+            if (!IsFrozen) Shoot();
         }
 
         public void Shoot()
         {
-            double startX = Canvas.GetLeft(this.Visual) + this.Visual.Width / 2;
-            double startY = Canvas.GetBottom(this.Visual);
-            Pocisk pocisk = new Pocisk("spider", 1 ,5 + (currentLevel * 0.3), startX, startY,canvas, new List<Enemy>(), player.Visual, -1);
+            double startX = Canvas.GetLeft(Visual) + Visual.Width / 2;
+            double startY = Canvas.GetBottom(Visual);
+            new Pocisk("spider", 1, 5 + (currentLevel * 0.3), startX, startY, canvas, new List<Enemy>(), player, level_g, -1);
         }
 
         public void StopShooting()
@@ -250,6 +301,99 @@ namespace Space_Intruder.Class
                 shootTimer.Interval = TimeSpan.FromSeconds(attackRate);
                 shootTimer.Start();
             }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+            if (Health <= 0) StopShooting();
+        }
+    }
+
+    public class BossEnemy : TankEnemy
+    {
+        private Canvas canvas;
+        private DispatcherTimer shootTimer;
+        private Hero player;
+        private Level_Gry level_g;
+
+        public BossEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
+            : base(x, y, level)
+        {
+            this.level_g = level_g;
+            this.canvas = canvas;
+            this.player = player;
+            BaseHealth = 30;
+            BaseSpeed = 1.2;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+
+            Visual.Width = 100;
+            Visual.Height = 100;
+
+            InitializeShooting();
+        }
+
+        private void InitializeShooting()
+        {
+            shootTimer = new DispatcherTimer();
+            shootTimer.Interval = TimeSpan.FromSeconds(4.0);
+            shootTimer.Tick += ShootTimer_Tick;
+            shootTimer.Start();
+        }
+
+        private void ShootTimer_Tick(object sender, EventArgs e)
+        {
+            if (!IsFrozen) Shoot();
+        }
+
+        private void Shoot()
+        {
+            double startX = Canvas.GetLeft(Visual) + Visual.Width / 2;
+            double startY = Canvas.GetBottom(Visual);
+            new Pocisk("boss", 3, 6, startX, startY, canvas, new List<Enemy>(), player, level_g, -1, 20, 50);
+        }
+
+        public void StopShooting()
+        {
+            shootTimer?.Stop();
+        }
+
+        public void StartShooting()
+        {
+            if (shootTimer != null && !shootTimer.IsEnabled)
+            {
+                shootTimer.Interval = TimeSpan.FromSeconds(1.2);
+                shootTimer.Start();
+            }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+            if (Health <= 0) StopShooting();
+        }
+    }
+
+    public class HeavyMageEnemy : MageEnemy
+    {
+        public HeavyMageEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
+            : base(x, y, canvas, player, level, level_g)
+        {
+            BaseHealth = 6;
+            BaseAttackRate = 2.0;
+            Health = CalculateScaledHealth(BaseHealth, level);
+            Speed = CalculateScaledSpeed(BaseSpeed, level);
+
+            Visual.Width = 60;
+            Visual.Height = 60;
+        }
+
+        protected override void Shoot()
+        {
+            double startX = Canvas.GetLeft(Visual) + Visual.Width / 2;
+            double startY = Canvas.GetBottom(Visual);
+            new Pocisk("mag", 2, 5 + (currentLevel * 0.5), startX, startY, canvas, new List<Enemy>(), player, level_g, -1, 10, 30);
         }
     }
 }

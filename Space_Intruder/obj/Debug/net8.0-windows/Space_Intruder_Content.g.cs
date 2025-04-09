@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/hero.gif")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/boss.gif")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/czarodziej.gif")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/nietoperz.gif")]
