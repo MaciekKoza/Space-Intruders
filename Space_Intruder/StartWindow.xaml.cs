@@ -23,5 +23,24 @@ namespace Space_Intruder
         {
             InitializeComponent();
         }
+
+        private void StartGameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow gra = new MainWindow();
+            gra.Show();
+            this.Close();
+        }
+
+        private void RankingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            WynikiWindow wyniki = new WynikiWindow();
+            wyniki.Show();
+            this.Close();
+        }
+
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

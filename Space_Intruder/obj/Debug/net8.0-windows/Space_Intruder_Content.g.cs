@@ -13,5 +13,6 @@
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/czarodziej.gif")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/nietoperz.gif")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/pajak.gif")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("video/zamek.mp4")]
 
 

@@ -19,6 +19,7 @@
     <None Remove="Video\czarodziej.gif" />
     <None Remove="Video\nietoperz.gif" />
     <None Remove="Video\pajak.gif" />
+    <None Remove="Video\zamek.mp4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Video\pajak.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Video\zamek.mp4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
