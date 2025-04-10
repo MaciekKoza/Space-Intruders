@@ -84,7 +84,7 @@ namespace Space_Intruder.Class
             switch (Type)
             {
                 case BoostType.Shield:
-                    hero.IsShielded = true;
+                    /*hero.IsShielded = true;
                     effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
                     effectTimer.Tick += (s, e) =>
                     {
@@ -93,7 +93,7 @@ namespace Space_Intruder.Class
                         ShowEffectEndedMessage("Tarcza wygasła!");
                     };
                     effectTimer.Start();
-                    ShowEffectActivatedMessage("Aktywowano tarczę!");
+                    ShowEffectActivatedMessage("Aktywowano tarczę!");*/
                     break;
 
                 case BoostType.Freeze:

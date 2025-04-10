@@ -16,7 +16,7 @@ namespace Space_Intruder
         }
 
         // Ścieżka do pliku z wynikami
-        private readonly string resultsFilePath = @"C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\Wyniki_Graczy.txt";
+        private readonly string resultsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wyniki_Graczy.txt");
 
         public WynikiWindow()
         {
@@ -30,30 +30,27 @@ namespace Space_Intruder
             {
                 var results = new List<GameResult>();
 
-                // Sprawdzenie czy plik istnieje
-                if (File.Exists(resultsFilePath))
+                // Tworzy plik, jeśli nie istnieje
+                if (!File.Exists(resultsFilePath))
                 {
-                    string[] lines = File.ReadAllLines(resultsFilePath);
-
-                    foreach (string line in lines)
-                    {
-                        string[] parts = line.Split('|');
-                        if (parts.Length == 4)
-                        {
-                            results.Add(new GameResult
-                            {
-                                PlayerName = parts[0].Trim(),
-                                Level = parts[1].Trim(),
-                                Time = parts[2].Trim(),
-                                Result = parts[3].Trim()
-                            });
-                        }
-                    }
+                    File.Create(resultsFilePath).Close();
                 }
-                else
+
+                string[] lines = File.ReadAllLines(resultsFilePath);
+
+                foreach (string line in lines)
                 {
-                    // Jeśli plik nie istnieje, wyświetl komunikat
-                    MessageBox.Show("Brak zapisanych wyników.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
+                    string[] parts = line.Split('|');
+                    if (parts.Length == 4)
+                    {
+                        results.Add(new GameResult
+                        {
+                            PlayerName = parts[0].Trim(),
+                            Level = parts[1].Trim(),
+                            Time = parts[2].Trim(),
+                            Result = parts[3].Trim()
+                        });
+                    }
                 }
 
                 ResultsList.ItemsSource = results;
@@ -64,6 +61,7 @@ namespace Space_Intruder
             }
         }
 
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             StartWindow startWindow = new StartWindow();
@@ -73,7 +71,7 @@ namespace Space_Intruder
 
         private void VideoBackground_MediaEnded(object sende, RoutedEventArgs e)
         {
-
+            MessageBox.Show("uj");
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)

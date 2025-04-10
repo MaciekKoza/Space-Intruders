@@ -1,1 +1,2 @@
-Chuj | 2 | 12:34:34 | Wygrana
+Chuj | 2 | 12:34:34 | 
+WygranaGracz | 9 | 00:02:45 | Wygrał

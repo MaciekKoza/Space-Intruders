@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,34 +21,23 @@ namespace Space_Intruder
         private DispatcherTimer gameTimer;
         private Hero player;
         private List<Boost> activeBoosts = new List<Boost>();
+        private Stopwatch gameStopwatch = new Stopwatch();
+        private string playerName = "Gracz"; // Możesz dodać dialog wprowadzania nazwy
 
         public MainWindow()
         {
             InitializeComponent();
             MyCanvas.Loaded += (sender, e) => InitializeGame();
+            gameStopwatch.Start(); // Rozpocznij pomiar czasu gry
         }
-
-        public void SetPlayer(Hero player)
-        {
-            this.player = player;
-        }
-
 
         private void InitializeGame()
         {
-            // 1. Stwórz Level_Gry bez gracza (tymczasowo null)
             gameLevel = new Level_Gry(MyCanvas, null);
-
-            // 2. Stwórz gracza z referencją do gameLevel
             player = new Hero(MyCanvas, 200, 20, gameLevel);
-
-            // 3. Ustaw gracza w Level_Gry
             gameLevel.SetPlayer(player);
+            gameLevel.LoadLevel(3);
 
-            // 4. Wczytaj poziom
-            gameLevel.LoadLevel(1);
-
-            // Reszta bez zmian
             gameTimer = new DispatcherTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(16);
             gameTimer.Tick += GameLoop;
@@ -56,7 +46,48 @@ namespace Space_Intruder
             player.LivesChanged += (sender, e) => UpdateLifeDisplay();
             current_level.Text = $"Level {gameLevel.CurrentLevel}";
             UpdateLifeDisplay();
+        }
 
+        private void SaveGameResult(bool isWin)
+        {
+            try
+            {
+                string resultLine = $"{playerName} | " +
+                                   $"{gameLevel.CurrentLevel} | " +
+                                   $"{gameStopwatch.Elapsed.ToString(@"hh\:mm\:ss")} | " +
+                                   $"{(isWin ? "Wygrał" : "Przegrał")}";
+
+                string filePath = "Wyniki_Graczy.txt";
+                File.AppendAllText(filePath, resultLine + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Błąd zapisu wyniku: {ex.Message}");
+            }
+        }
+
+        private void EndGame(bool isWin)
+        {
+            isGameOver = true;
+            gameTimer?.Stop();
+            gameLevel?.StopAllEnemies();
+            gameStopwatch.Stop();
+
+            SaveGameResult(isWin); // Zapisz wynik przed pokazaniem komunikatu
+
+            MessageBox.Show(isWin ? "Gratulacje! Wygrałeś!" : "Przegrałeś!");
+
+            // Możesz dodać tutaj przejście do ekranu wyników lub menu głównego
+        }
+
+        public void PlayerHit()
+        {
+            player.TakeDamage();
+            UpdateLifeDisplay();
+            if (!player.IsAlive)
+            {
+                EndGame(false);
+            }
         }
 
         private void UpdateLifeDisplay()
@@ -65,7 +96,7 @@ namespace Space_Intruder
             {
                 LifeContainer.Children.Clear();
 
-                for (int i = 0; i < player.Lives; i++)
+                for (int i = 0; i < player._lives; i++)
                 {
                     var heart = new Image
                     {
@@ -77,12 +108,6 @@ namespace Space_Intruder
                     LifeContainer.Children.Add(heart);
                 }
             });
-        }
-
-        // Wywołuj tę metodę zawsze gdy zmienia się liczba żyć:
-        private void Player_OnLifeChanged(object sender, EventArgs e)
-        {
-            UpdateLifeDisplay();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -157,24 +182,9 @@ namespace Space_Intruder
             upgradeScreen.Show();
         }
 
-        private void EndGame(bool isWin)
-        {
-            isGameOver = true;
-            gameTimer?.Stop();
-            gameLevel?.StopAllEnemies();
-            MessageBox.Show(isWin ? "Congratulations! You won!" : "Game Over!");
-        }
-
         public void SlowDownPlayer()
         {
             player.ApplySlowEffect(0.5, 2.0);
-        }
-
-        public void PlayerHit()
-        {
-            player.TakeDamage();
-            UpdateLifeDisplay();
-            if (!player.IsAlive) EndGame(false);
         }
     }
 }

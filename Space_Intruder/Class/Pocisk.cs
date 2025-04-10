@@ -80,7 +80,7 @@ public class Pocisk
         {
             CheckCollisionWithEnemies();
         }
-        else if (direction == -1) // Pocisk przeciwnika (leci w dół)
+        else // Pocisk przeciwnika (leci w dół)
         {
             CheckCollisionWithPlayer();
         }
@@ -120,17 +120,14 @@ public class Pocisk
 
     private void HandleEnemyDeath(Enemy enemy)
     {
-        // Zatrzymanie specjalnych ataków wrogów
         if (enemy is MageEnemy mageEnemy)
             mageEnemy.StopShooting();
         if (enemy is SpiderEnemy spiderEnemy)
             spiderEnemy.StopShooting();
 
-        // Usunięcie wroga z canvas i listy
         canvas.Children.Remove(enemy.Visual);
         enemies.Remove(enemy);
 
-        // Losowe spawnienie boosta (30% szansy)
         if (random.Next(0, 10) < 3)
         {
             BoostType type = (BoostType)random.Next(0, 3);
@@ -145,9 +142,19 @@ public class Pocisk
 
     private void CheckCollisionWithPlayer()
     {
-        Rect pociskRect = new Rect(Canvas.GetLeft(visual), Canvas.GetBottom(visual), visual.Width, visual.Height);
-        Rect playerRect = new Rect(Canvas.GetLeft(hero.Visual), Canvas.GetBottom(hero.Visual),
-                           hero.Visual.Width, hero.Visual.Height);
+        if (hero.IsShielded) return; // Jeśli bohater ma tarczę, nie otrzymuje obrażeń
+
+        Rect pociskRect = new Rect(
+            Canvas.GetLeft(visual),
+            Canvas.GetBottom(visual),
+            visual.Width,
+            visual.Height);
+
+        Rect playerRect = new Rect(
+            Canvas.GetLeft(hero.Visual),
+            Canvas.GetBottom(hero.Visual),
+            hero.Visual.Width,
+            hero.Visual.Height);
 
         if (pociskRect.IntersectsWith(playerRect))
         {
@@ -158,7 +165,10 @@ public class Pocisk
                 (Application.Current.MainWindow as MainWindow)?.SlowDownPlayer();
             }
 
-            (Application.Current.MainWindow as MainWindow)?.PlayerHit();
+            if (postac == "mag" || postac == "boss" || postac == "spider")
+            {
+                (Application.Current.MainWindow as MainWindow)?.PlayerHit();
+            }
         }
     }
 

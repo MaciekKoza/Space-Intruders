@@ -27,7 +27,7 @@ namespace Space_Intruder
             UpdateUpgradePointsDisplay();
 
             // Sprawdź maksymalną liczbę żyć na starcie
-            if (_player.Lives >= _player.MaxLives)
+            if (_player._lives >= _player.MaxLives)
             {
                 HealthUpgradeBtn.IsEnabled = false;
                 HealthUpgradeBtn.Content = "MAX ŻYĆ OSIĄGNIĘTY";
@@ -115,7 +115,7 @@ namespace Space_Intruder
         private void HealthUpgrade_Click(object sender, RoutedEventArgs e)
         {
             // Sprawdź czy gracz ma już maksymalną liczbę żyć
-            if (_player.Lives >= _player.MaxLives)
+            if (_player._lives >= _player.MaxLives)
             {
                 // Wyłącz przycisk i pokaż komunikat
                 HealthUpgradeBtn.IsEnabled = false;
@@ -139,7 +139,7 @@ namespace Space_Intruder
                 AnimateButton(HealthUpgradeBtn);
 
                 // Dodatkowe sprawdzenie po ulepszeniu
-                if (_player.Lives >= _player.MaxLives)
+                if (_player._lives >= _player.MaxLives)
                 {
                     HealthUpgradeBtn.IsEnabled = false;
                     HealthUpgradeBtn.Content = "MAX ŻYĆ OSIĄGNIĘTY";

@@ -23,24 +23,14 @@ namespace Space_Intruder.GameObjects
         public double Height => Visual.Height;
         public event EventHandler LivesChanged;
 
-        private int _lives = 3;
+        public int _lives;
         private int _maxLives = 5;
         public int MaxLives
         {
             get => _maxLives;
             set => _maxLives = value;
         }
-
-        public int Lives
-        {
-            get => _lives;
-            set
-            {
-                _lives = Math.Min(value, MaxLives);
-                LivesChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-        public bool IsAlive => Lives > 0;
+        public bool IsAlive => _lives > 0;
 
         public bool IsFrozen { get; set; }
 
@@ -74,7 +64,7 @@ namespace Space_Intruder.GameObjects
             _levelGry = levelGry;
             PositionX = initialX;
             PositionY = initialY;
-            Lives = 3;
+            _lives = 3;
 
             gameCanvas.Children.Add(Visual);
             Canvas.SetLeft(Visual, PositionX);
@@ -164,13 +154,7 @@ namespace Space_Intruder.GameObjects
 
         public void TakeDamage()
         {
-            if (IsShielded) return;
-
-            Lives--;
-            if (!IsAlive)
-            {
-                Visual.Visibility = Visibility.Collapsed;
-            }
+            _lives--;
         }
 
         public void ApplySlowEffect(double duration = 2.0, double slowFactor = 0.5)
@@ -203,7 +187,7 @@ namespace Space_Intruder.GameObjects
                     _movementSpeed += value;
                     break;
                 case "health":
-                    Lives += (int)value;
+                    _lives += (int)value;
                     break;
             }
         }
