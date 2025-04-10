@@ -44,7 +44,7 @@ namespace Space_Intruder
             gameLevel = new Level_Gry(MyCanvas, null);
             player = new Hero(MyCanvas, 200, 20, gameLevel, this, MyCanvas);
             gameLevel.SetPlayer(player);
-            gameLevel.LoadLevel(1);
+            gameLevel.LoadLevel(6);
 
             gameTimer = new DispatcherTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(16);

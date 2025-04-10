@@ -244,11 +244,11 @@ namespace Space_Intruder.Class
                     row == 1 ?
                     new MageEnemy(x, y, gameCanvas, player, CurrentLevel, this)
                     {
-                        BaseAttackRate = 2.2
+                        BaseAttackRate = 2.0
                     } :
                     new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel, this)
                     {
-                        BaseAttackRate = 3.0,
+                        BaseAttackRate = 1.0,
                         BaseSpeed = 3.0
                     });
         }
@@ -288,12 +288,12 @@ namespace Space_Intruder.Class
                     row < 4 ?
                     new MageEnemy(x, y, gameCanvas, player, CurrentLevel, this)
                     {
-                        BaseAttackRate = 2.8
+                        BaseAttackRate = 2.0
                     } :
                     new SpiderEnemy(x, y, gameCanvas, player, CurrentLevel, this)
                     {
                         BaseAttackRate = 3.5,
-                        BaseSpeed = 3.5
+                        BaseSpeed = 1.5
                     });
         }
 

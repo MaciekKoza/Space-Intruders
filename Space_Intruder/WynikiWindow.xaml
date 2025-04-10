@@ -88,19 +88,10 @@
     </Window.Resources>
 
     <Grid>
-        <!-- Tło - takie samo jak w StartWindow -->
-        <MediaElement x:Name="VideoBackground"
-                      Source="Video/zamek.mp4"
-                      LoadedBehavior="Play"
-                      UnloadedBehavior="Stop"
-                      Stretch="UniformToFill"
-                      IsMuted="True"
-                      MediaEnded="VideoBackground_MediaEnded">
-            <MediaElement.Effect>
-                <BlurEffect Radius="1"/>
-                <!-- Lekkie rozmycie dla lepszej czytelności -->
-            </MediaElement.Effect>
-        </MediaElement>
+        <!-- Tło - tutaj wstaw swoje zdjęcie -->
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/background_menu.png"/>
+        </Grid.Background>
 
         <!-- Efekt przyciemnienia tła -->
         <Rectangle Fill="Black" Opacity="0.4"/>

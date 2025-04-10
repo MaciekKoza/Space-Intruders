@@ -60,7 +60,7 @@ namespace Space_Intruder.Class
             {
                 BoostType.Shield => "Images/tarcza.png",
                 BoostType.Freeze => "Images/kostka.png",
-                BoostType.TripleShot => "Images/triple.png",
+                BoostType.TripleShot => "Images/triple_hero.png",
                 _ => "Images/default_boost.png"
             };
         }

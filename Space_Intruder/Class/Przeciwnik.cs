@@ -153,9 +153,9 @@ namespace Space_Intruder.Class
         {
             foreach (var bullet in activeBullets)
             {
-                if (bullet.visual != null && canvas.Children.Contains(bullet.visual))
+                if (bullet.Visual != null && canvas.Children.Contains(bullet.Visual))
                 {
-                    canvas.Children.Remove(bullet.visual);
+                    canvas.Children.Remove(bullet.Visual);
                 }
             }
             activeBullets.Clear();

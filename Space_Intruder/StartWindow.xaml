@@ -71,18 +71,9 @@
 
     <Grid>
         <!-- Tło - tutaj wstaw swoje zdjęcie -->
-        <MediaElement x:Name="VideoBackground"
-                      Source="Video/zamek.mp4"
-                      LoadedBehavior="Play"
-                      UnloadedBehavior="Stop"
-                      Stretch="UniformToFill"
-                      IsMuted="True"
-                      MediaEnded="VideoBackground_MediaEnded">
-            <MediaElement.Effect>
-                <BlurEffect Radius="1"/>
-                <!-- Lekkie rozmycie dla lepszej czytelności -->
-            </MediaElement.Effect>
-            </MediaElement>
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/background_menu.png"/>
+        </Grid.Background>
 
             <!-- Efekt przyciemnienia tła -->
         <Rectangle Fill="Black" Opacity="0.4"/>

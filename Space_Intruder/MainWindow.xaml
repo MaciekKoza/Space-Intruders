@@ -48,7 +48,7 @@
         <!-- Plansza gry -->
         <Canvas x:Name="MyCanvas" Grid.Column="1">
             <Canvas.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Images/background.jpg" Stretch="UniformToFill"/>
+                <ImageBrush ImageSource="pack://application:,,,/Images/background.png" Stretch="UniformToFill"/>
             </Canvas.Background>
         </Canvas>
 
