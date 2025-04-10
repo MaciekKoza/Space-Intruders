@@ -1,34 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\Space-Intruders\\",
+  "WorkspaceRootPath": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\class\\pocisk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space-intruders\\space_intruder\\class\\pocisk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\pocisk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\wynikiwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\wynikiwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\upgradescreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\upgradescreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\class\\level_gry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space-intruders\\space_intruder\\class\\level_gry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\level_gry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|c:\\users\\admin\\desktop\\space-intruders\\space_intruder\\class\\boost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\boost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space-intruders\\space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\class\\hero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|d:\\users\\micha\u0142\\desktop\\ttt\\space-intruders\\space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E9DA9E52-14D0-4986-9914-339CC2619632}|Space_Intruder\\Space_Intruder.csproj|solutionrelative:space_intruder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,43 +26,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Level_Gry.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Level_Gry.cs",
+              "RelativeDocumentMoniker": "Space_Intruder\\Class\\Level_Gry.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Level_Gry.cs",
+              "RelativeToolTip": "Space_Intruder\\Class\\Level_Gry.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAwwB8AAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T13:08:59.916Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Pocisk.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Pocisk.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Pocisk.cs",
               "RelativeDocumentMoniker": "Space_Intruder\\Class\\Pocisk.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Pocisk.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Pocisk.cs",
               "RelativeToolTip": "Space_Intruder\\Class\\Pocisk.cs",
-              "ViewState": "AgIAAIkAAAAAzMzMzEwVwJ8AAAAJAAAAAAAAAA==",
+              "ViewState": "AQIAAHcAAAAAAAAAAAAowLgAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T12:39:14.91Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UpgradeScreen.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\UpgradeScreen.xaml.cs",
-              "RelativeDocumentMoniker": "Space_Intruder\\UpgradeScreen.xaml.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\UpgradeScreen.xaml.cs",
-              "RelativeToolTip": "Space_Intruder\\UpgradeScreen.xaml.cs",
-              "ViewState": "AgIAAAoAAACA0czMzOw5wB4AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T12:35:26.807Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Hero.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Hero.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Hero.cs",
               "RelativeDocumentMoniker": "Space_Intruder\\Class\\Hero.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Hero.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\Class\\Hero.cs",
               "RelativeToolTip": "Space_Intruder\\Class\\Hero.cs",
-              "ViewState": "AgIAAI4AAAAABAAAAIAuwJoAAAAgAAAAAAAAAA==",
+              "ViewState": "AQIAAFYAAAAAAAAAAADwv50AAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T12:30:52.616Z",
               "EditorCaption": ""
@@ -82,50 +70,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "WynikiWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\WynikiWindow.xaml",
-              "RelativeDocumentMoniker": "Space_Intruder\\WynikiWindow.xaml",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\WynikiWindow.xaml",
-              "RelativeToolTip": "Space_Intruder\\WynikiWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-04-10T11:46:02.881Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Boost.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Boost.cs",
-              "RelativeDocumentMoniker": "Space_Intruder\\Class\\Boost.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Boost.cs",
-              "RelativeToolTip": "Space_Intruder\\Class\\Boost.cs",
-              "ViewState": "AgIAAFIAAAAAZmZmZqYqwFYAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T10:53:50.612Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Level_Gry.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Level_Gry.cs",
-              "RelativeDocumentMoniker": "Space_Intruder\\Class\\Level_Gry.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\Class\\Level_Gry.cs",
-              "RelativeToolTip": "Space_Intruder\\Class\\Level_Gry.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T09:02:35.944Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "Space_Intruder\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Users\\Micha\u0142\\Desktop\\ttt\\Space-Intruders\\Space_Intruder\\MainWindow.xaml.cs",
               "RelativeToolTip": "Space_Intruder\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAEYAAAAAY2ZmZiYpwFIAAAAdAAAAAAAAAA==",
+              "ViewState": "AQIAAEQAAAAAAAAAAAAwwFUAAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-09T18:38:45.209Z",
               "EditorCaption": ""

@@ -50,9 +50,11 @@ namespace Space_Intruder.GameObjects
         private readonly DoubleAnimation _moveAnimation;
 
         private Level_Gry _levelGry; // przechowujemy referencję
+        private MainWindow _mainWindow;
 
-        public Hero(Canvas gameCanvas, double initialX, double initialY, Level_Gry levelGry)
+        public Hero(Canvas gameCanvas, double initialX, double initialY, Level_Gry levelGry, MainWindow mainWindow)
         {
+            _mainWindow = mainWindow;
             Visual = new Image
             {
                 Width = 50,
@@ -151,6 +153,10 @@ namespace Space_Intruder.GameObjects
             _attackTimer.Start();
         }
 
+        public void Damage()
+        {
+            _mainWindow.PlayerHit();
+        }
 
         public void TakeDamage()
         {

@@ -27,6 +27,11 @@ namespace Space_Intruder.Class
             Instance = this;
         }
 
+        public void PlayerHit()
+        {
+            player.Damage();
+        }
+
         public void SetPlayer(Hero player) => this.player = player;
 
         public void LoadLevel(int level)

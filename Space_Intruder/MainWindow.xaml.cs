@@ -82,6 +82,7 @@ namespace Space_Intruder
 
         public void PlayerHit()
         {
+            MessageBox.Show("cioss");
             player.TakeDamage();
             UpdateLifeDisplay();
             if (!player.IsAlive)

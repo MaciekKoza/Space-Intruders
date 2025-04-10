@@ -158,7 +158,6 @@ public class Pocisk
 
         if (pociskRect.IntersectsWith(playerRect))
         {
-            Destroy();
 
             if (isSpiderShot)
             {
@@ -167,8 +166,11 @@ public class Pocisk
 
             if (postac == "mag" || postac == "boss" || postac == "spider")
             {
-                (Application.Current.MainWindow as MainWindow)?.PlayerHit();
+                MessageBox.Show("Dostał");
+                level.PlayerHit();
             }
+
+            Destroy();
         }
     }
 
