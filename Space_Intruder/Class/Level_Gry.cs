@@ -10,9 +10,9 @@ namespace Space_Intruder.Class
     public class Level_Gry
     {
         public int CurrentLevel { get; private set; } = 1;
-
         public int TotalLevels { get; } = 9;
         public bool IsGameCompleted { get; private set; }
+        public bool IsPaused { get; private set; }
 
         private Canvas gameCanvas;
         private Hero player;
@@ -20,19 +20,26 @@ namespace Space_Intruder.Class
 
         public static Level_Gry Instance { get; private set; }
 
-
         public Level_Gry(Canvas gameCanvas, Hero player)
         {
             this.gameCanvas = gameCanvas;
             this.player = player;
-
             Instance = this;
         }
 
-        public void SetPlayer(Hero player)
+        public void PauseGame()
         {
-            this.player = player;
+            IsPaused = true;
+            StopAllEnemies();
         }
+
+        public void ResumeGame()
+        {
+            IsPaused = false;
+            ResumeAllEnemies();
+        }
+
+        public void SetPlayer(Hero player) => this.player = player;
 
         public void LoadLevel(int level)
         {
@@ -41,55 +48,32 @@ namespace Space_Intruder.Class
 
             switch (CurrentLevel)
             {
-                case 1:
-                    CreateLevel1();
-                    break;
-                case 2:
-                    CreateLevel2();
-                    break;
-                case 3:
-                    CreateLevel3();
-                    break;
-                case 4:
-                    CreateLevel4();
-                    break;
-                case 5:
-                    CreateLevel5();
-                    break;
-                case 6:
-                    CreateLevel6();
-                    break;
-                case 7:
-                    CreateLevel7();
-                    break;
-                case 8:
-                    CreateLevel8();
-                    break;
-                case 9:
-                    CreateLevel9();
-                    break;
-                default:
-                    IsGameCompleted = true;
-                    break;
+                case 1: CreateLevel1(); break;
+                case 2: CreateLevel2(); break;
+                case 3: CreateLevel3(); break;
+                case 4: CreateLevel4(); break;
+                case 5: CreateLevel5(); break;
+                case 6: CreateLevel6(); break;
+                case 7: CreateLevel7(); break;
+                case 8: CreateLevel8(); break;
+                case 9: CreateLevel9(); break;
+                default: IsGameCompleted = true; break;
             }
         }
 
         public void NextLevel()
         {
             if (CurrentLevel < TotalLevels)
-            {
                 LoadLevel(CurrentLevel + 1);
-            }
             else
-            {
                 IsGameCompleted = true;
-            }
         }
 
         public void ResumeAllEnemies()
         {
             foreach (var enemy in enemies.ToList())
             {
+                enemy.IsFrozen = false; ;
                 if (enemy is MageEnemy mage) mage.StartShooting();
                 if (enemy is SpiderEnemy spider) spider.StartShooting();
             }
@@ -97,27 +81,28 @@ namespace Space_Intruder.Class
 
         public void StopAllEnemies()
         {
+            MessageBox.Show("Sztop");
             foreach (var enemy in enemies.ToList())
             {
+                enemy.IsFrozen = true;
                 if (enemy is MageEnemy mage) mage.StopShooting();
                 if (enemy is SpiderEnemy spider) spider.StopShooting();
             }
         }
 
-        public bool AreAllEnemiesDefeated()
-        {
-            return enemies.Count == 0;
-        }
-
+        public bool AreAllEnemiesDefeated() => enemies.Count == 0;
         public List<Enemy> GetCurrentEnemies() => enemies;
 
         public void UpdateEnemies()
         {
+            if (IsPaused) return;
+
             foreach (var enemy in enemies.ToList())
             {
+                if (!enemy.ShouldMove) continue;
+
                 enemy.Move();
 
-                // Check collision with edges
                 double enemyX = Canvas.GetLeft(enemy.Visual);
                 if (enemyX <= 0 || enemyX + enemy.Visual.Width >= gameCanvas.ActualWidth)
                 {
@@ -126,7 +111,6 @@ namespace Space_Intruder.Class
                     Canvas.SetBottom(enemy.Visual, currentY - 20);
                 }
 
-                // Check collision with player
                 Rect enemyRect = new Rect(
                     Canvas.GetLeft(enemy.Visual),
                     Canvas.GetBottom(enemy.Visual),
@@ -319,6 +303,25 @@ namespace Space_Intruder.Class
                         BaseAttackRate = 3.5,
                         BaseSpeed = 3.5
                     });
+        }
+
+        public void SetEnemiesMovement(bool shouldMove)
+        {
+            foreach (var enemy in enemies.ToList())
+            {
+                if (shouldMove)
+                {
+                    enemy.ResumeMovement();
+                    if (enemy is MageEnemy mage) mage.StartShooting();
+                    if (enemy is SpiderEnemy spider) spider.StartShooting();
+                }
+                else
+                {
+                    enemy.StopMovement();
+                    if (enemy is MageEnemy mage) mage.StopShooting();
+                    if (enemy is SpiderEnemy spider) spider.StopShooting();
+                }
+            }
         }
 
         private void CreateLevel9()

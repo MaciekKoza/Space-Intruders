@@ -137,8 +137,13 @@ namespace Space_Intruder
             gameTimer.Stop();
             gameLevel.StopAllEnemies();
             player.IsFrozen = true;
+            foreach (var enanmy in gameLevel.GetCurrentEnemies())
+            {
+                enanmy.IsFrozen = true;
+            }
 
-            var upgradeScreen = new UpgradeScreen(player);
+
+            var upgradeScreen = new UpgradeScreen(player, gameLevel);
             upgradeScreen.Closed += (s, args) =>
             {
                 isUpgradeScreenOpen = false;
@@ -158,12 +163,6 @@ namespace Space_Intruder
             gameTimer?.Stop();
             gameLevel?.StopAllEnemies();
             MessageBox.Show(isWin ? "Congratulations! You won!" : "Game Over!");
-        }
-
-        public void StopGame()
-        {
-            gameTimer?.Stop();
-            gameLevel?.StopAllEnemies();
         }
 
         public void SlowDownPlayer()

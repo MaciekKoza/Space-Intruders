@@ -28,6 +28,8 @@ namespace Space_Intruder.Class
         private ScaleTransform _flipTransform;
         protected DispatcherTimer movementTimer; // Dodano timer ruchu
 
+        public bool ShouldMove { get; protected set; } = true;
+
         public bool IsFrozen { get; set; }
 
         public Enemy(double x, double y, EnemyType type, int health, int level)
@@ -76,18 +78,20 @@ namespace Space_Intruder.Class
             }
         }
 
+
         public virtual void Move()
         {
-            if (IsFrozen) return;
-
-            double newX = Canvas.GetLeft(Visual) + Speed * Direction;
-            Canvas.SetLeft(Visual, newX);
-
-            // Odwrócenie kierunku wizualnego
-            if ((Direction > 0 && _flipTransform.ScaleX < 0) ||
-                (Direction < 0 && _flipTransform.ScaleX > 0))
+            if (!IsFrozen)
             {
-                _flipTransform.ScaleX *= -1;
+                double newX = Canvas.GetLeft(Visual) + Speed * Direction;
+                Canvas.SetLeft(Visual, newX);
+
+                // Odwrócenie kierunku wizualnego
+                if ((Direction > 0 && _flipTransform.ScaleX < 0) ||
+                    (Direction < 0 && _flipTransform.ScaleX > 0))
+                {
+                    _flipTransform.ScaleX *= -1;
+                }
             }
         }
 
@@ -132,11 +136,13 @@ namespace Space_Intruder.Class
 
         public void StopMovement()
         {
+            ShouldMove = false;
             movementTimer?.Stop();
         }
 
         public void ResumeMovement()
         {
+            ShouldMove = true;
             if (movementTimer != null && !movementTimer.IsEnabled)
             {
                 movementTimer.Start();

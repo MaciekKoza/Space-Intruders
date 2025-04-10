@@ -71,6 +71,11 @@ namespace Space_Intruder
             this.Close();
         }
 
+        private void VideoBackground_MediaEnded(object sende, RoutedEventArgs e)
+        {
+
+        }
+
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();

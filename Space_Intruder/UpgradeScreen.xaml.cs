@@ -14,11 +14,16 @@ namespace Space_Intruder
         private int _remainingUpgrades = 3; // Maksymalnie 3 ulepszenia
         private readonly Brush _availableColor = Brushes.Gold;
         private readonly Brush _usedColor = Brushes.Gray;
-
-        public UpgradeScreen(Hero player)
+        private Level_Gry level;
+        public UpgradeScreen(Hero player, Level_Gry level_)
         {
             InitializeComponent();
             _player = player;
+            level = level_;
+
+            // Zatrzymaj przeciwników gdy okno jest otwarte
+            level.SetEnemiesMovement(false);
+
             UpdateUpgradePointsDisplay();
 
             // Sprawdź maksymalną liczbę żyć na starcie
@@ -145,6 +150,9 @@ namespace Space_Intruder
 
         private void Continue_Click(object sender, RoutedEventArgs e)
         {
+            // Wznów ruch przeciwników przed zamknięciem
+            level.SetEnemiesMovement(true);
+
             // Animacja znikania
             var fadeOut = new DoubleAnimation(0, TimeSpan.FromSeconds(0.2));
             fadeOut.Completed += (s, _) => this.Close();
