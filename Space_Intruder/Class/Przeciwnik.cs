@@ -26,19 +26,23 @@ namespace Space_Intruder.Class
 
         protected int currentLevel = 1;
         private ScaleTransform _flipTransform;
-        protected DispatcherTimer movementTimer; // Dodano timer ruchu
+        protected DispatcherTimer movementTimer;
 
         public bool ShouldMove { get; protected set; } = true;
-
         public bool IsFrozen { get; set; }
 
-        public Enemy(double x, double y, EnemyType type, int health, int level)
+        public Canvas canvas;
+        protected List<Pocisk> activeBullets = new List<Pocisk>(); // Changed from _activeBullets to match usage below
+
+        public Enemy(double x, double y, EnemyType type, int health, int level, Canvas _canvas)
         {
             Type = type;
             currentLevel = level;
             BaseHealth = health;
             Health = CalculateScaledHealth(health, level);
             Speed = CalculateScaledSpeed(BaseSpeed, level);
+
+            canvas = _canvas;
 
             Visual = new Image
             {
@@ -55,7 +59,6 @@ namespace Space_Intruder.Class
             Canvas.SetLeft(Visual, x);
             Canvas.SetBottom(Visual, y);
 
-            // Inicjalizacja timera ruchu
             movementTimer = new DispatcherTimer();
             movementTimer.Interval = TimeSpan.FromMilliseconds(16);
             movementTimer.Tick += (s, e) => Move();
@@ -73,20 +76,17 @@ namespace Space_Intruder.Class
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading GIF: {ex.Message}");
-                // Fallback to static image
                 Visual.Source = new BitmapImage(new Uri("pack://application:,,,/Images/default_enemy.png"));
             }
         }
 
-
         public virtual void Move()
         {
-            if (!IsFrozen)
+            if (!IsFrozen && ShouldMove)
             {
                 double newX = Canvas.GetLeft(Visual) + Speed * Direction;
                 Canvas.SetLeft(Visual, newX);
 
-                // Odwrócenie kierunku wizualnego
                 if ((Direction > 0 && _flipTransform.ScaleX < 0) ||
                     (Direction < 0 && _flipTransform.ScaleX > 0))
                 {
@@ -148,6 +148,18 @@ namespace Space_Intruder.Class
                 movementTimer.Start();
             }
         }
+
+        public void ClearAllBullets()
+        {
+            foreach (var bullet in activeBullets)
+            {
+                if (bullet.visual != null && canvas.Children.Contains(bullet.visual))
+                {
+                    canvas.Children.Remove(bullet.visual);
+                }
+            }
+            activeBullets.Clear();
+        }
     }
 
     public enum EnemyType
@@ -162,8 +174,8 @@ namespace Space_Intruder.Class
 
     public class BasicEnemy : Enemy
     {
-        public BasicEnemy(double x, double y, int level)
-            : base(x, y, EnemyType.Basic, 1, level)
+        public BasicEnemy(double x, double y, int level, Canvas canvas)
+            : base(x, y, EnemyType.Basic, 1, level, canvas)
         {
             BaseHealth = 1;
             BaseSpeed = 2.0;
@@ -174,8 +186,8 @@ namespace Space_Intruder.Class
 
     public class TankEnemy : Enemy
     {
-        public TankEnemy(double x, double y, int level)
-            : base(x, y, EnemyType.Tank, 3, level)
+        public TankEnemy(double x, double y, int level, Canvas canvas)
+            : base(x, y, EnemyType.Tank, 3, level, canvas)
         {
             BaseHealth = 3;
             BaseSpeed = 1.5;
@@ -186,17 +198,15 @@ namespace Space_Intruder.Class
 
     public class MageEnemy : Enemy
     {
-        protected Canvas canvas;
         protected DispatcherTimer shootTimer;
         protected Hero player;
         protected double attackRate;
         protected Level_Gry level_g;
 
         public MageEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
-            : base(x, y, EnemyType.Mage, 1, level)
+            : base(x, y, EnemyType.Mage, 1, level, canvas)
         {
             this.level_g = level_g;
-            this.canvas = canvas;
             this.player = player;
             BaseHealth = 1;
             BaseSpeed = 1.8;
@@ -252,17 +262,15 @@ namespace Space_Intruder.Class
 
     public class SpiderEnemy : Enemy
     {
-        private Canvas canvas;
         private DispatcherTimer shootTimer;
         private Hero player;
         private double attackRate;
         private Level_Gry level_g;
 
         public SpiderEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
-            : base(x, y, EnemyType.Spider, 1, level)
+            : base(x, y, EnemyType.Spider, 1, level, canvas)
         {
             this.level_g = level_g;
-            this.canvas = canvas;
             this.player = player;
             BaseHealth = 1;
             BaseSpeed = 2.2;
@@ -318,16 +326,14 @@ namespace Space_Intruder.Class
 
     public class BossEnemy : TankEnemy
     {
-        private Canvas canvas;
         private DispatcherTimer shootTimer;
         private Hero player;
         private Level_Gry level_g;
 
         public BossEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
-            : base(x, y, level)
+            : base(x, y, level, canvas)
         {
             this.level_g = level_g;
-            this.canvas = canvas;
             this.player = player;
             BaseHealth = 30;
             BaseSpeed = 1.2;
@@ -386,6 +392,7 @@ namespace Space_Intruder.Class
         public HeavyMageEnemy(double x, double y, Canvas canvas, Hero player, int level, Level_Gry level_g)
             : base(x, y, canvas, player, level, level_g)
         {
+            Type = EnemyType.HeavyMage;
             BaseHealth = 6;
             BaseAttackRate = 2.0;
             Health = CalculateScaledHealth(BaseHealth, level);

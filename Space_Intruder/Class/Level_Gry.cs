@@ -154,7 +154,7 @@ namespace Space_Intruder.Class
         {
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(2, 5, 80, 60, 50, startY,
-                (row, x, y) => new BasicEnemy(x, y, CurrentLevel)
+                (row, x, y) => new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                 {
                     BaseSpeed = 2.5,
                     BaseAttackRate = 1.2
@@ -165,7 +165,7 @@ namespace Space_Intruder.Class
         {
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(3, 4, 90, 70, 60, startY,
-                (row, x, y) => new BasicEnemy(x, y, CurrentLevel)
+                (row, x, y) => new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                 {
                     BaseHealth = row + 1,
                     BaseSpeed = 2.5 + (row * 0.2),
@@ -178,7 +178,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(2, 6, 70, 60, 40, startY,
                 (row, x, y) => row < 1 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseSpeed = 2.8,
                         BaseAttackRate = 1.3
@@ -194,7 +194,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(3, 5, 80, 65, 50, startY,
                 (row, x, y) => row == 0 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseSpeed = 3.0
                     } :
@@ -203,7 +203,7 @@ namespace Space_Intruder.Class
                     {
                         BaseAttackRate = 1.8
                     } :
-                    new TankEnemy(x, y, CurrentLevel)
+                    new TankEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = 5,
                         BaseSpeed = 2.0
@@ -215,7 +215,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(4, 6, 75, 60, 40, startY,
                 (row, x, y) => row < 2 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = row + 2,
                         BaseSpeed = 3.2
@@ -225,7 +225,7 @@ namespace Space_Intruder.Class
                     {
                         BaseAttackRate = 2.0
                     } :
-                    new TankEnemy(x, y, CurrentLevel)
+                    new TankEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = 6,
                         BaseSpeed = 2.2
@@ -237,7 +237,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(3, 7, 70, 65, 30, startY,
                 (row, x, y) => row == 0 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseSpeed = 3.5
                     } :
@@ -258,7 +258,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(4, 6, 80, 70, 40, startY,
                 (row, x, y) => row < 1 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = 3,
                         BaseSpeed = 3.7
@@ -268,7 +268,7 @@ namespace Space_Intruder.Class
                     {
                         BaseAttackRate = 2.5
                     } :
-                    new TankEnemy(x, y, CurrentLevel)
+                    new TankEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = 8,
                         BaseSpeed = 2.5
@@ -280,7 +280,7 @@ namespace Space_Intruder.Class
             double startY = 60; // 50px od góry + miejsce dla 2 rzędów
             CreateEnemyPattern(5, 5, 85, 60, 50, startY,
                 (row, x, y) => row < 2 ?
-                    new BasicEnemy(x, y, CurrentLevel)
+                    new BasicEnemy(x, y, CurrentLevel, gameCanvas)
                     {
                         BaseHealth = 4,
                         BaseSpeed = 4.0
@@ -334,7 +334,7 @@ namespace Space_Intruder.Class
                 });
 
             // Boss
-            var boss = new TankEnemy(gameCanvas.ActualWidth / 2 - 60, bossY, CurrentLevel * 3)
+            var boss = new TankEnemy(gameCanvas.ActualWidth / 2 - 60, bossY, CurrentLevel * 3, gameCanvas)
             {
                 BaseHealth = 200,
                 BaseSpeed = 1.2,

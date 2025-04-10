@@ -188,3 +188,9 @@ C:\Users\admin\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\V
 D:\Users\Michał\Desktop\ttt\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\Video\zamek.mp4
 D:\Users\Michał\Desktop\ttt\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\WynikiWindow.g.cs
 D:\Users\Michał\Desktop\ttt\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\WynikiWindow.baml
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\StartWindow.g.cs
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\WynikiWindow.g.cs
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\Video\Hero.gif
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\bin\Debug\net8.0-windows\Video\zamek.mp4
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\StartWindow.baml
+D:\Users\Michał\Desktop\Space-Intruders\Space_Intruder\obj\Debug\net8.0-windows\WynikiWindow.baml

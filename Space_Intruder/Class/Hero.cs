@@ -52,7 +52,15 @@ namespace Space_Intruder.GameObjects
         private Level_Gry _levelGry; // przechowujemy referencję
         private MainWindow _mainWindow;
 
-        public Hero(Canvas gameCanvas, double initialX, double initialY, Level_Gry levelGry, MainWindow mainWindow)
+        private Canvas canvas;
+        private List<Pocisk> _activeBullets = new List<Pocisk>(); // Lista aktywnych pocisków
+
+        public int GetDamage() => _damage;
+        public double GetAttackSpeed() => _attackSpeed;
+        public double GetMovementSpeed() => _movementSpeed;
+
+
+        public Hero(Canvas gameCanvas, double initialX, double initialY, Level_Gry levelGry, MainWindow mainWindow, Canvas _canvas)
         {
             _mainWindow = mainWindow;
             Visual = new Image
@@ -87,6 +95,69 @@ namespace Space_Intruder.GameObjects
             _attackTimer = new DispatcherTimer();
             _attackTimer.Interval = TimeSpan.FromSeconds(1 / _attackSpeed);
             _attackTimer.Tick += (s, e) => _canAttack = true;
+            canvas = _canvas;
+        }
+
+        // W klasie Hero
+        public void Shoot(Canvas gameCanvas, List<Enemy> enemies)
+        {
+            if (!_canAttack || !IsAlive) return;
+
+            double bulletY = PositionY + Height;
+            double centerX = PositionX + Width / 2;
+
+            void FireBullet(double offsetX)
+            {
+                var bullet = new Pocisk(
+                    "bohater",
+                    _damage,
+                    5,
+                    centerX + offsetX,
+                    bulletY,
+                    gameCanvas,
+                    enemies,
+                    this,
+                    _levelGry,
+                    1
+                );
+
+                _activeBullets.Add(bullet);
+                bullet.BulletDestroyed += OnBulletDestroyed;
+            }
+
+            if (IsTripleShot)
+            {
+                FireBullet(-20); // lewy
+                FireBullet(0);   // środkowy
+                FireBullet(20);  // prawy
+            }
+            else
+            {
+                FireBullet(0);   // pojedynczy środkowy strzał
+            }
+
+            _canAttack = false;
+            _attackTimer.Start();
+        }
+
+
+        private void OnBulletDestroyed(object sender, EventArgs e)
+        {
+            if (sender is Pocisk bullet)
+            {
+                _activeBullets.Remove(bullet);
+                bullet.BulletDestroyed -= OnBulletDestroyed;
+            }
+        }
+
+        public void ClearAllBullets()
+        {
+            // Usuń wszystkie pociski z Canvas i wyczyść listę
+            foreach (var bullet in _activeBullets.ToArray()) // Używamy ToArray() aby uniknąć modyfikacji kolekcji podczas iteracji
+            {
+                bullet.Destroy();
+            }
+            _activeBullets.Clear();
         }
 
         private void LoadAnimatedGif(string path)
@@ -129,30 +200,6 @@ namespace Space_Intruder.GameObjects
             PositionX = newX;
         }
 
-        public void Shoot(Canvas gameCanvas, List<Enemy> enemies)
-        {
-            if (!_canAttack || !IsAlive) return;
-
-            double bulletX = PositionX + Width / 2;
-            double bulletY = PositionY + Height;
-
-            var bullet = new Pocisk(
-                "bohater",
-                _damage,
-                5,
-                bulletX,
-                bulletY,
-                gameCanvas,
-                enemies,
-                this,  // ✅ przekazanie obiektu Hero
-                _levelGry,  // ✅ przekazanie Level_Gry
-                1
-            );
-
-            _canAttack = false;
-            _attackTimer.Start();
-        }
-
         public void Damage()
         {
             _mainWindow.PlayerHit();
@@ -160,6 +207,7 @@ namespace Space_Intruder.GameObjects
 
         public void TakeDamage()
         {
+            if (IsShielded) { return; }
             _lives--;
         }
 

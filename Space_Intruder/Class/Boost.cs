@@ -16,17 +16,17 @@ namespace Space_Intruder.Class
         TripleShot
     }
 
-    public class Boost
+    // Bazowa klasa Boost (nieznacznie zmodyfikowana)
+    public abstract class Boost
     {
-        public Image Visual { get; private set; }
-        public BoostType Type { get; private set; }
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        private Canvas canvas;
-        private DispatcherTimer fallTimer;
-        private DispatcherTimer effectTimer;
-        private Hero hero;
-        private Level_Gry level;
+        public Image Visual { get; protected set; }
+        public BoostType Type { get; protected set; }
+        public double X { get; protected set; }
+        public double Y { get; protected set; }
+        protected Canvas canvas;
+        protected DispatcherTimer fallTimer;
+        protected Hero hero;
+        protected Level_Gry level;
 
         public Boost(Canvas canvas, double x, double y, BoostType type, Hero hero, Level_Gry level)
         {
@@ -44,29 +44,17 @@ namespace Space_Intruder.Class
                 Stretch = Stretch.Uniform
             };
 
-            string imagePath = GetImagePathForType(type);
-            try
-            {
-                Visual.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Błąd ładowania obrazka: {imagePath}\n{ex.Message}");
-            }
-
+            Visual.Source = new BitmapImage(new Uri(GetImagePathForType(type), UriKind.Relative));
             Canvas.SetLeft(Visual, x);
             Canvas.SetBottom(Visual, y);
             canvas.Children.Add(Visual);
 
-            fallTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(10)
-            };
-            fallTimer.Tick += (s, e) => UpdatePosition(hero);
+            fallTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+            fallTimer.Tick += (s, e) => UpdatePosition();
             fallTimer.Start();
         }
 
-        private string GetImagePathForType(BoostType type)
+        protected virtual string GetImagePathForType(BoostType type)
         {
             return type switch
             {
@@ -77,76 +65,9 @@ namespace Space_Intruder.Class
             };
         }
 
-        private void Activate()
-        {
-            fallTimer.Stop();
+        public abstract void Activate();
 
-            switch (Type)
-            {
-                case BoostType.Shield:
-                    /*hero.IsShielded = true;
-                    effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
-                    effectTimer.Tick += (s, e) =>
-                    {
-                        hero.IsShielded = false;
-                        effectTimer.Stop();
-                        ShowEffectEndedMessage("Tarcza wygasła!");
-                    };
-                    effectTimer.Start();
-                    ShowEffectActivatedMessage("Aktywowano tarczę!");*/
-                    break;
-
-                case BoostType.Freeze:
-                    FreezeEnemies();
-                    break;
-
-                case BoostType.TripleShot:
-                    hero.IsTripleShot = true;
-                    effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(7) };
-                    effectTimer.Tick += (s, e) =>
-                    {
-                        hero.IsTripleShot = false;
-                        effectTimer.Stop();
-                        ShowEffectEndedMessage("Triple shot wygasł!");
-                    };
-                    effectTimer.Start();
-                    ShowEffectActivatedMessage("Aktywowano triple shot!");
-                    break;
-            }
-
-            RemoveFromCanvas();
-        }
-
-        private void FreezeEnemies()
-        {
-            level.StopAllEnemies();
-            ShowEffectActivatedMessage("Zamrożono przeciwników!");
-
-            effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
-            effectTimer.Tick += (s, e) => free();
-            effectTimer.Start();
-        }
-
-        private void free()
-        {
-            foreach (var ene in level.GetCurrentEnemies())
-            {
-                ene.IsFrozen = false;
-            }
-            ShowEffectEndedMessage("Efekt zamrożenia zakończony!");
-        }
-
-        private void ShowEffectActivatedMessage(string message)
-        {
-            MessageBox.Show(message, "Boost aktywowany", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void ShowEffectEndedMessage(string message)
-        {
-            MessageBox.Show(message, "Boost zakończony", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        public bool UpdatePosition(Hero hero)
+        public bool UpdatePosition()
         {
             Y -= 2;
             Canvas.SetBottom(Visual, Y);
@@ -178,11 +99,104 @@ namespace Space_Intruder.Class
             return false;
         }
 
-        private void RemoveFromCanvas()
+        protected void RemoveFromCanvas()
         {
             fallTimer?.Stop();
-            effectTimer?.Stop();
             canvas.Children.Remove(Visual);
+        }
+
+    }
+
+    // Klasa dla Shield Boost
+    public class ShieldBoost : Boost
+    {
+        private DispatcherTimer effectTimer;
+
+        public ShieldBoost(Canvas canvas, double x, double y, Hero hero, Level_Gry level)
+            : base(canvas, x, y, BoostType.Shield, hero, level) { }
+
+        public override void Activate()
+        {
+            RemoveFromCanvas();
+            hero.IsShielded = true;
+
+            // Nadajemy efekt wizualny - żółty filtr na bohaterze
+            hero.Visual.OpacityMask = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255));
+
+            effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            effectTimer.Tick += (s, e) =>
+            {
+                hero.IsShielded = false;
+                hero.Visual.OpacityMask = null; // Usuwamy filtr
+                effectTimer.Stop();
+            };
+            effectTimer.Start();
+        }
+
+    }
+
+    // Klasa dla Freeze Boost
+    public class FreezeBoost : Boost
+    {
+        private DispatcherTimer effectTimer;
+
+        private Rectangle freezeOverlay;
+
+        public FreezeBoost(Canvas canvas, double x, double y, Hero hero, Level_Gry level)
+            : base(canvas, x, y, BoostType.Freeze, hero, level) { }
+
+        public override void Activate()
+        {
+            RemoveFromCanvas();
+            level.StopAllEnemies();
+
+            // Tworzymy efekt zamrożenia (półprzezroczysty niebieski overlay)
+            freezeOverlay = new Rectangle
+            {
+                Width = canvas.ActualWidth,
+                Height = canvas.ActualHeight,
+                Fill = new SolidColorBrush(Color.FromArgb(100, 100, 150, 255)), // Lekki niebieski
+                IsHitTestVisible = false
+            };
+            Canvas.SetLeft(freezeOverlay, 0);
+            Canvas.SetTop(freezeOverlay, 0);
+            canvas.Children.Add(freezeOverlay);
+
+            effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+            effectTimer.Tick += (s, e) =>
+            {
+                level.ResumeAllEnemies();
+                effectTimer.Stop();
+
+                // Usuwamy efekt zamrożenia
+                canvas.Children.Remove(freezeOverlay);
+            };
+            effectTimer.Start();
+        }
+
+    }
+
+    // Klasa dla TripleShot Boost
+    public class TripleShotBoost : Boost
+    {
+        private DispatcherTimer effectTimer;
+
+        public TripleShotBoost(Canvas canvas, double x, double y, Hero hero, Level_Gry level)
+            : base(canvas, x, y, BoostType.TripleShot, hero, level) { }
+
+        public override void Activate()
+        {
+            RemoveFromCanvas();
+            hero.IsTripleShot = true;
+
+            effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(7) };
+            effectTimer.Tick += (s, e) =>
+            {
+                hero.IsTripleShot = false;
+                effectTimer.Stop();
+            };
+            effectTimer.Start();
+
         }
     }
 }

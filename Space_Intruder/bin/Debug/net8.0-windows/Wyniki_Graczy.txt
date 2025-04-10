@@ -1,2 +1,9 @@
 Chuj | 2 | 12:34:34 | 
 WygranaGracz | 9 | 00:02:45 | Wygrał
+Gracz | 3 | 00:00:04 | Przegrał
+Chujek123 | 8 | 00:02:27 | Przegrał
+Gracz | 4 | 00:00:53 | Przegrał
+Dembol | 6 | 00:01:46 | Przegrał
+Tadziu | 4 | 00:01:11 | Przegrał
+Kwutas | 5 | 00:01:24 | Przegrał
+chujek | 5 | 00:00:58 | Przegrał

@@ -11,7 +11,7 @@ using Space_Intruder.GameObjects;
 
 public class Pocisk
 {
-    private Rectangle visual;
+    public Rectangle visual;
     private double speed;
     private Canvas canvas;
     private List<Enemy> enemies;
@@ -25,6 +25,8 @@ public class Pocisk
     private Random random;
     private Level_Gry level;
     public bool IsFrozen { get; set; }
+
+    public event EventHandler BulletDestroyed;
 
     public Pocisk(string postac, int damage, double speed, double startX, double startY,
              Canvas canvas, List<Enemy> enemies, Hero hero, Level_Gry level, int direction = 1,
@@ -128,21 +130,31 @@ public class Pocisk
         canvas.Children.Remove(enemy.Visual);
         enemies.Remove(enemy);
 
+        // 30% szans na spawn boosta
         if (random.Next(0, 10) < 3)
         {
             BoostType type = (BoostType)random.Next(0, 3);
-            var boost = new Boost(canvas,
-                               Canvas.GetLeft(enemy.Visual),
-                               Canvas.GetBottom(enemy.Visual),
-                               type,
-                               hero,
-                               level);
+            Boost boost = CreateBoost(type, Canvas.GetLeft(enemy.Visual), Canvas.GetBottom(enemy.Visual));
+        }
+    }
+
+    private Boost CreateBoost(BoostType type, double x, double y)
+    {
+        switch (type)
+        {
+            case BoostType.Shield:
+                return new ShieldBoost(canvas, x, y, hero, level);
+            case BoostType.Freeze:
+                return new FreezeBoost(canvas, x, y, hero, level);
+            case BoostType.TripleShot:
+                return new TripleShotBoost(canvas, x, y, hero, level);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), $"Unknown boost type: {type}");
         }
     }
 
     private void CheckCollisionWithPlayer()
     {
-        if (hero.IsShielded) return; // Jeśli bohater ma tarczę, nie otrzymuje obrażeń
 
         Rect pociskRect = new Rect(
             Canvas.GetLeft(visual),
@@ -166,7 +178,6 @@ public class Pocisk
 
             if (postac == "mag" || postac == "boss" || postac == "spider")
             {
-                MessageBox.Show("Dostał");
                 level.PlayerHit();
             }
 
@@ -174,12 +185,18 @@ public class Pocisk
         }
     }
 
-    private void Destroy()
+    public void Destroy()
     {
         timer?.Stop();
         if (canvas != null && visual != null && canvas.Children.Contains(visual))
         {
             canvas.Children.Remove(visual);
         }
+    }
+
+    // W metodzie, która kończy życie pocisku (np. po trafieniu w cel lub wyjściu poza ekran)
+    private void EndBulletLife()
+    {
+        Destroy();
     }
 }
