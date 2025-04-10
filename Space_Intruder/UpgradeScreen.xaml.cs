@@ -186,6 +186,11 @@ namespace Space_Intruder
             brush.BeginAnimation(SolidColorBrush.ColorProperty, colorAnimation);
         }
 
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
 
     }
 }

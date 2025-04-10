@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Space_Intruder"
         mc:Ignorable="d"
         Title="Wybierz Ulepszenia" 
-        Width="600" Height="670"
+        Width="600" Height="700"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"

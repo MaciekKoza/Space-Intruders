@@ -210,7 +210,7 @@ namespace Space_Intruder.Class
             this.player = player;
             BaseHealth = 1;
             BaseSpeed = 1.8;
-            BaseAttackRate = 0.5;
+            BaseAttackRate = 1.0;
 
             Health = CalculateScaledHealth(BaseHealth, level);
             Speed = CalculateScaledSpeed(BaseSpeed, level);
