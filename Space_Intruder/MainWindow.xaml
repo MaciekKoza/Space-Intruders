@@ -7,61 +7,138 @@
         mc:Ignorable="d"
         Title="Space Intruder"
         Width="1200"
-        Height="600"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Height="700"
+        MinWidth="800"
+        MinHeight="600"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        SizeChanged="Window_SizeChanged"
         KeyDown="Window_KeyDown">
 
     <Window.Resources>
-        <Style x:Key="MedievalStatBlock" TargetType="TextBlock">
+        <!-- Styl dla tekstu -->
+        <Style x:Key="StatTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#FFD700"/>
-            <Setter Property="FontFamily" Value="Old English Text MT"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Margin" Value="5,2"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5,3"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#FFD700" BlurRadius="3" ShadowDepth="1" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Styl dla nagłówków -->
+        <Style x:Key="HeaderTextStyle" BasedOn="{StaticResource StatTextStyle}" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="5,10,5,5"/>
+        </Style>
+
+        <!-- Styl dla panelu statystyk -->
+        <Style x:Key="StatsPanelStyle" TargetType="Border">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#AA000000" Offset="0"/>
+                        <GradientStop Color="#88000000" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#FFD700"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="3" Opacity="0.7"/>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
+    <!-- Główne tło okna -->
     <Grid>
-        <!-- Definicja kolumn: lewa - statystyki, prawa - plansza -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
-            <!-- Statystyki -->
-            <ColumnDefinition Width="*"/>
-            <!-- Canvas z grą -->
-        </Grid.ColumnDefinitions>
+        <!-- Tło całego okna -->
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/background.png" Stretch="UniformToFill" Opacity="0.9"/>
+        </Grid.Background>
 
-        <!-- Lewy panel statystyk gracza -->
-        <StackPanel x:Name="StatsPanel" Orientation="Vertical"
-                    Grid.Column="0"
-                    Margin="10"
-                    Background="#66000000"
-                    Width="200"
-                    VerticalAlignment="Bottom">
-            <TextBlock Style="{StaticResource MedievalStatBlock}" Text="Statystyki Gracza:" FontWeight="Bold" FontSize="18"/>
-            <TextBlock x:Name="StatTimeText" Style="{StaticResource MedievalStatBlock}" Text="Czas gry: 0s"/>
-            <TextBlock x:Name="StatDamageText" Style="{StaticResource MedievalStatBlock}" Text="Obrażenia: 2"/>
-            <TextBlock x:Name="StatAttackSpeedText" Style="{StaticResource MedievalStatBlock}" Text="Szybkość strzałów: 1.5/s"/>
-            <TextBlock x:Name="StatMoveSpeedText" Style="{StaticResource MedievalStatBlock}" Text="Szybkość ruchu: 25"/>
-            <TextBlock x:Name="StatShieldText" Style="{StaticResource MedievalStatBlock}" Text="Tarcza: Nieaktywna"/>
-            <TextBlock x:Name="StatTripleShotText" Style="{StaticResource MedievalStatBlock}" Text="Potrójny strzał: Nieaktywne"/>
-        </StackPanel>
+        <!-- Efekt rozmycia tła (opcjonalny) -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <VisualBrush Visual="{Binding ElementName=blurEffectGrid}"/>
+            </Rectangle.Fill>
+            <Rectangle.Effect>
+                <BlurEffect Radius="10"/>
+            </Rectangle.Effect>
+            <Rectangle.OpacityMask>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#00000000" Offset="0.3"/>
+                    <GradientStop Color="#FF000000" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.OpacityMask>
+        </Rectangle>
 
-        <!-- Plansza gry -->
-        <Canvas x:Name="MyCanvas" Grid.Column="1">
-            <Canvas.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Images/background.png" Stretch="UniformToFill"/>
-            </Canvas.Background>
-        </Canvas>
+        <Grid x:Name="blurEffectGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" MinWidth="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Górny panel z poziomem -->
-        <TextBlock x:Name="current_level" Text="Level 1" FontSize="24" Foreground="White" 
-                   Grid.ColumnSpan="2"
-                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0"/>
+            <!-- Lewy panel statystyk -->
+            <Border Grid.Column="0" 
+                    Style="{StaticResource StatsPanelStyle}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Margin="10">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HeaderTextStyle}" Text="PLAYER STATS"/>
 
-        <!-- Dolny prawy panel z życiami -->
-        <StackPanel x:Name="LifeContainer" Orientation="Horizontal" 
-                   Grid.ColumnSpan="2"
-                   HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
-            <!-- Serduszka będą dodawane dynamicznie w kodzie -->
-        </StackPanel>
+                    <Rectangle Height="1" Margin="5,0" Fill="#FFD700" Opacity="0.3"/>
+
+                    <TextBlock x:Name="StatTimeText" Style="{StaticResource StatTextStyle}" Text="Game Time: 0s"/>
+                    <TextBlock x:Name="StatDamageText" Style="{StaticResource StatTextStyle}" Text="Damage: 2"/>
+                    <TextBlock x:Name="StatAttackSpeedText" Style="{StaticResource StatTextStyle}" Text="Fire Rate: 1.5/s"/>
+                    <TextBlock x:Name="StatMoveSpeedText" Style="{StaticResource StatTextStyle}" Text="Move Speed: 25"/>
+
+                    <Rectangle Height="1" Margin="5,5" Fill="#FFD700" Opacity="0.3"/>
+
+                    <TextBlock x:Name="StatShieldText" Style="{StaticResource StatTextStyle}" Text="Shield: Inactive" Foreground="#FF5555"/>
+                    <TextBlock x:Name="StatTripleShotText" Style="{StaticResource StatTextStyle}" Text="Triple Shot: Off" Foreground="#FF5555"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Kontener dla gry z przezroczystym tłem -->
+            <Grid Grid.Column="1" Background="Transparent">
+                <Viewbox Stretch="Uniform">
+                    <Canvas x:Name="MyCanvas" Width="1200" Height="700" Background="Transparent"/>
+                </Viewbox>
+
+                <!-- Górny panel z poziomem -->
+                <TextBlock x:Name="current_level" Text="LEVEL 1" 
+                           FontSize="24" 
+                           Foreground="#FFD700" 
+                           FontFamily="Consolas" 
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Top" 
+                           Margin="0,20,250,0">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="0" Opacity="0.8"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <!-- Dolny prawy panel z życiami -->
+                <StackPanel x:Name="LifeContainer" Orientation="Horizontal" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Bottom" 
+                           Margin="0,0,20,20">
+                    <!-- Serduszka będą dodawane dynamicznie w kodzie -->
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

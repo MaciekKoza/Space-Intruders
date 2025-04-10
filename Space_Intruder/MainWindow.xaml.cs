@@ -44,7 +44,7 @@ namespace Space_Intruder
             gameLevel = new Level_Gry(MyCanvas, null);
             player = new Hero(MyCanvas, 200, 20, gameLevel, this, MyCanvas);
             gameLevel.SetPlayer(player);
-            gameLevel.LoadLevel(6);
+            gameLevel.LoadLevel(1);
 
             gameTimer = new DispatcherTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(16);
@@ -54,6 +54,12 @@ namespace Space_Intruder
             player.LivesChanged += (sender, e) => UpdateLifeDisplay();
             current_level.Text = $"Level {gameLevel.CurrentLevel}";
             UpdateLifeDisplay();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Możesz dodać dodatkową logikę dostosowania UI jeśli potrzebna
+            // np. skalowanie czcionek dla bardzo małych okien
         }
 
         private void UpdatePlayerStats(object sender, EventArgs e)

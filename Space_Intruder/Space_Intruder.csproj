@@ -32,6 +32,7 @@
     <None Remove="Images\pocisk_bossa_triple.png" />
     <None Remove="Images\pocisk_nietoperza.png" />
     <None Remove="Images\pocisk_nietoperza_triple.png" />
+    <None Remove="Images\pocisk_pajaka.png" />
     <None Remove="Images\pocisk_pająka.png" />
     <None Remove="Images\pocisk_pająka_triple.png" />
     <None Remove="Images\pocisk_wroga.png" />
@@ -103,7 +104,7 @@
     <Resource Include="Images\pocisk_nietoperza_triple.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\pocisk_pająka.png">
+    <Resource Include="Images\pocisk_pajaka.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\pocisk_pająka_triple.png">

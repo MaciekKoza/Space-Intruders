@@ -41,7 +41,7 @@ namespace Space_Intruder.GameObjects
         // Stats
         public double _movementSpeed = 25;
         private int _damage = 2;
-        private double _attackSpeed = 1.5; // attacks per second
+        private double _attackSpeed = 2.0; // attacks per second
         private DispatcherTimer _attackTimer;
         private bool _canAttack = true;
 
