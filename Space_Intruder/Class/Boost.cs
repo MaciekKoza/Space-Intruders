@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -17,7 +18,7 @@ namespace Space_Intruder.Class
 
     public class Boost
     {
-        public Ellipse Visual { get; private set; }
+        public Image Visual { get; private set; }
         public BoostType Type { get; private set; }
         public double X { get; private set; }
         public double Y { get; private set; }
@@ -27,7 +28,6 @@ namespace Space_Intruder.Class
         private Hero hero;
         private Level_Gry level;
 
-        // Konstruktor Boost
         public Boost(Canvas canvas, double x, double y, BoostType type, Hero hero, Level_Gry level)
         {
             this.canvas = canvas;
@@ -37,47 +37,44 @@ namespace Space_Intruder.Class
             this.hero = hero;
             this.level = level;
 
-            Visual = new Ellipse
+            Visual = new Image
             {
-                Width = 30,
-                Height = 30,
-                Fill = GetColorForType(type)
+                Width = 40,
+                Height = 40,
+                Stretch = Stretch.Uniform
             };
+
+            string imagePath = GetImagePathForType(type);
+            try
+            {
+                Visual.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd ładowania obrazka: {imagePath}\n{ex.Message}");
+            }
 
             Canvas.SetLeft(Visual, x);
             Canvas.SetBottom(Visual, y);
             canvas.Children.Add(Visual);
 
-            // Dodaj timer opadania
             fallTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(20)  // Standardowa wartość dla płynności animacji
+                Interval = TimeSpan.FromMilliseconds(10)
             };
             fallTimer.Tick += (s, e) => UpdatePosition(hero);
             fallTimer.Start();
         }
 
-
-        private Brush GetColorForType(BoostType type)
+        private string GetImagePathForType(BoostType type)
         {
             return type switch
             {
-                BoostType.Shield => Brushes.Cyan,
-                BoostType.Freeze => Brushes.LightBlue,
-                BoostType.TripleShot => Brushes.Orange,
-                _ => Brushes.White
+                BoostType.Shield => "Images/tarcza.png",
+                BoostType.Freeze => "Images/kostka.png",
+                BoostType.TripleShot => "Images/triple.png",
+                _ => "Images/default_boost.png"
             };
-        }
-
-        private bool CheckCollisionWithHero()
-        {
-            double boostLeft = Canvas.GetLeft(Visual);
-            double boostRight = boostLeft + Visual.Width;
-            double heroLeft = Canvas.GetLeft(hero.Visual);
-            double heroRight = heroLeft + hero.Visual.Width;
-
-            return Y <= Canvas.GetBottom(hero.Visual) + hero.Visual.Height &&
-                   boostRight >= heroLeft && boostLeft <= heroRight;
         }
 
         private void Activate()
@@ -93,19 +90,14 @@ namespace Space_Intruder.Class
                     {
                         hero.IsShielded = false;
                         effectTimer.Stop();
+                        ShowEffectEndedMessage("Tarcza wygasła!");
                     };
                     effectTimer.Start();
+                    ShowEffectActivatedMessage("Aktywowano tarczę!");
                     break;
 
                 case BoostType.Freeze:
-                    level.StopAllEnemies();
-                    effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
-                    effectTimer.Tick += (s, e) =>
-                    {
-                        level.ResumeAllEnemies();
-                        effectTimer.Stop();
-                    };
-                    effectTimer.Start();
+                    FreezeEnemies();
                     break;
 
                 case BoostType.TripleShot:
@@ -115,45 +107,68 @@ namespace Space_Intruder.Class
                     {
                         hero.IsTripleShot = false;
                         effectTimer.Stop();
+                        ShowEffectEndedMessage("Triple shot wygasł!");
                     };
                     effectTimer.Start();
+                    ShowEffectActivatedMessage("Aktywowano triple shot!");
                     break;
             }
 
             RemoveFromCanvas();
         }
 
+        private void FreezeEnemies()
+        {
+            level.StopAllEnemies();
+            ShowEffectActivatedMessage("Zamrożono przeciwników!");
+
+            effectTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+            effectTimer.Tick += (s, e) => free();
+            effectTimer.Start();
+        }
+
+        private void free()
+        {
+            foreach (var ene in level.GetCurrentEnemies())
+            {
+                ene.IsFrozen = false;
+            }
+            ShowEffectEndedMessage("Efekt zamrożenia zakończony!");
+        }
+
+        private void ShowEffectActivatedMessage(string message)
+        {
+            MessageBox.Show(message, "Boost aktywowany", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ShowEffectEndedMessage(string message)
+        {
+            MessageBox.Show(message, "Boost zakończony", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         public bool UpdatePosition(Hero hero)
         {
-            Y -= 2;  // Move boost down
-            Canvas.SetBottom(Visual, Y);  // Update the position on screen
+            Y -= 2;
+            Canvas.SetBottom(Visual, Y);
 
-            // Get boost coordinates
-            double boostLeft = Canvas.GetLeft(Visual);
-            double boostRight = boostLeft + Visual.Width;
-            double boostBottom = Y;
-            double boostTop = boostBottom + Visual.Height;  // Since Y is the bottom position
+            Rect boostRect = new Rect(
+                Canvas.GetLeft(Visual),
+                Canvas.GetBottom(Visual),
+                Visual.Width,
+                Visual.Height);
 
-            // Get hero coordinates
-            double heroLeft = Canvas.GetLeft(hero.Visual);
-            double heroRight = heroLeft + hero.Visual.Width;
-            double heroBottom = Canvas.GetBottom(hero.Visual);
-            double heroTop = heroBottom + hero.Visual.Height;
+            Rect heroRect = new Rect(
+                hero.PositionX,
+                hero.PositionY,
+                hero.Width,
+                hero.Height);
 
-            // Check for collision
-            bool isCollected = boostRight >= heroLeft &&
-                              boostLeft <= heroRight &&
-                              boostBottom <= heroTop &&
-                              boostTop >= heroBottom;
-
-            if (isCollected)
+            if (boostRect.IntersectsWith(heroRect))
             {
                 Activate();
-                MessageBox.Show($"Boost {Type} collected!");
                 return true;
             }
 
-            // Check if boost reached bottom of screen
             if (Y <= 0)
             {
                 RemoveFromCanvas();
@@ -171,4 +186,3 @@ namespace Space_Intruder.Class
         }
     }
 }
-

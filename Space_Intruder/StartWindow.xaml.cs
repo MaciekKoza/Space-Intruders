@@ -42,5 +42,10 @@ namespace Space_Intruder
         {
             this.Close();
         }
+
+        private void VideoBackground_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("chuj");
+        }
     }
 }

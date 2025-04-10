@@ -13,8 +13,11 @@
     <None Remove="Images\boss.png" />
     <None Remove="Images\czarodziej.png" />
     <None Remove="Images\heart.jpg" />
+    <None Remove="Images\kostka.png" />
     <None Remove="Images\nietoperz.png" />
     <None Remove="Images\pajak.png" />
+    <None Remove="Images\tarcza.png" />
+    <None Remove="Images\triple.png" />
     <None Remove="Video\boss.gif" />
     <None Remove="Video\czarodziej.gif" />
     <None Remove="Video\nietoperz.gif" />
@@ -35,10 +38,19 @@
     <Resource Include="Images\heart.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\kostka.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\nietoperz.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\pajak.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\tarcza.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\triple.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="Video\Hero.gif">

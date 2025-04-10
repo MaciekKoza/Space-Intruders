@@ -27,18 +27,6 @@ namespace Space_Intruder.Class
             Instance = this;
         }
 
-        public void PauseGame()
-        {
-            IsPaused = true;
-            StopAllEnemies();
-        }
-
-        public void ResumeGame()
-        {
-            IsPaused = false;
-            ResumeAllEnemies();
-        }
-
         public void SetPlayer(Hero player) => this.player = player;
 
         public void LoadLevel(int level)
@@ -81,7 +69,6 @@ namespace Space_Intruder.Class
 
         public void StopAllEnemies()
         {
-            MessageBox.Show("Sztop");
             foreach (var enemy in enemies.ToList())
             {
                 enemy.IsFrozen = true;
